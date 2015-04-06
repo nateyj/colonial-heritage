@@ -1,0 +1,16 @@
+<%inherit file="base_ajax.htm" />
+
+<%block name="content">
+
+<form id="usernameform" method='POST' action="/homepage/rental_cart.enter_username">
+    <div class="form-group">
+        <table>
+            ${ form }
+        </table>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary" type="submit">Check Username</button>
+    </div>
+</form>
+
+</%block>

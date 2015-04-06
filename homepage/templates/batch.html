@@ -1,0 +1,97 @@
+<%inherit file="/homepage/templates/base.htm" />
+
+<%block name="title">
+<title>CHF - Reports</title>
+</%block>
+
+<%block name="content">
+
+<div class="text-left">
+    <h1 class="page-header">Overdue Rental Items</h1>
+</div>
+
+<a href="/homepage/report.overdue_email/" class="btn btn-primary">Send Reminder Emails</a>
+
+<div>
+    %if thirtyTo60_customers_dict != {}:
+    <h2>Rental Transactions 30-59 Days Overdue</h2>
+    <table class="table table-striped">
+        <tr>
+            <th>Customer</th>
+            <th>Days Overdue</th>
+            <th>Rental Products</th>
+        </tr>
+        %for customer in thirtyTo60_customers_dict:
+        %for transaction in thirtyTo60_customers_dict[customer]:
+        <tr>
+            <td>${ customer.get_full_name() }</td>
+            <td>${ thirtyTo60_days_overdue_dict[customer][transaction] }</td>
+            <td>
+                %for rental_item in thirtyTo60_customers_dict[customer][transaction]:
+                ${ rental_item }<br/>
+                %endfor
+            </td>
+        </tr>
+        %endfor
+        %endfor
+    </table>
+    %else:
+    <h2>No Rental Transactions 30-60 Days Overdue</h2>
+    %endif
+</div>
+<div>
+    %if sixtyTo90_customers_dict != {}:
+    <h2>Rental Transactions 60-89 Days Overdue</h2>
+    <table class="table table-striped">
+        <tr>
+            <th>Customer</th>
+            <th>Days Overdue</th>
+            <th>Rental Products</th>
+        </tr>
+        %for customer in sixtyTo90_customers_dict:
+        %for transaction in sixtyTo90_customers_dict[customer]:
+        <tr>
+            <td>${ customer.get_full_name() }</td>
+            <td>${ sixtyTo90_days_overdue_dict[customer][transaction] }</td>
+            <td>
+                %for rental_item in sixtyTo90_customers_dict[customer][transaction]:
+                ${ rental_item }<br/>
+                %endfor
+            </td>
+        </tr>
+        %endfor
+        %endfor
+    </table>
+    %else:
+    <h2>No Rental Transactions 30-59 Days Overdue</h2>
+    %endif
+</div>
+<div>
+    %if over90_customers_dict != {}:
+    <h2>Rental Transactions Over 89 Days Overdue</h2>
+    <table class="table table-striped">
+        <tr>
+            <th>Customer</th>
+            <th>Days Overdue</th>
+            <th>Rental Products</th>
+        </tr>
+        %for customer in over90_customers_dict:
+        %for transaction in over90_customers_dict[customer]:
+        <tr>
+            <td>${ customer.get_full_name() }</td>
+            <td>${ over90_days_overdue_dict[customer][transaction] }</td>
+            <td>
+                %for rental_item in over90_customers_dict[customer][transaction]:
+                ${ rental_item }<br/>
+                %endfor
+            </td>
+        </tr>
+        %endfor
+        %endfor
+    </table>
+    %else:
+    <h2>No Rental Transactions Over 89 Days Overdue</h2>
+    %endif
+</div>
+
+</%block>

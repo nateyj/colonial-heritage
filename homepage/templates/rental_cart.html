@@ -1,0 +1,53 @@
+<%inherit file="/homepage/templates/base_ajax.htm" />
+
+<%block name="content">
+
+%if rental_cart == []:
+<div>Your cart is empty</div>
+%else:
+<table class="table table-hover">
+    <%
+    grand_total_qty = 0
+    %>
+    <tr>
+        <th>ID</th>
+        <th>Rental Product</th>
+        <th>Price Per Day</th>
+        <th></th>
+    </tr>
+    %for product in rental_cart:
+    <%
+    grand_total_qty += 1
+    %>
+    <tr>
+        <td>${ product.id }</td>
+        <td>
+            ${ product.product_specification.name }
+            <div class="cart_item_container">
+                <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ product.product_specification.photo.image }"/>
+            </div>
+        </td>
+        <td>$${ product.price_per_day }</td>
+        <td>
+            <button data-product_id="${ product.id }" type="button" class="remove btn btn-warning">Remove</button>
+        </td>
+    </tr>
+    %endfor
+    <tr class="total">
+        <td>Total</td>
+        <td></td>
+        <td>${ grand_total_qty } item(s)</td>
+        <td></td>
+    </tr>
+</table>
+<p id="buttons">
+<form method="POST" class="text-left" action="/homepage/rental_cart">
+    ${ form }
+    <div class="pull-right">
+        <button type="button" id="shop" class="btn btn-primary">Continue Shopping</button>
+        <button type="submit" id="checkout" class="btn btn-primary">Checkout</button>
+    </div>
+</form>
+</p>
+%endif
+</%block>

@@ -1,0 +1,44 @@
+<%inherit file="/catalog/templates/base_ajax.htm" />
+
+<%block name="content">
+<p style="font-weight: bold;">Hello ${ user.get_full_name() },</p>
+<p>Thank you for shopping with us! We'll send a confirmation when your order ships.</p>
+<table class="table table-hover">
+    <%
+    grand_total_amount = 0
+    grand_total_qty = 0
+    %>
+    <tr>
+        <th>Product</th>
+        <th>Product Price</th>
+        <th>Quantity</th>
+        <th>Amount</th>
+    </tr>
+    %for product in shopping_cart:
+    <%
+    qty = shopping_cart[product]
+    amount = product.product_specification.price * qty
+    grand_total_amount += amount
+    grand_total_qty += shopping_cart[product]
+    %>
+    <tr>
+        <td>${ product.product_specification.name }</td>
+        <td>$${ product.product_specification.price }</td>
+        <td>${ qty }</td>
+        <td>$${ amount }</td>
+    </tr>
+    %endfor
+    <tr style="font-weight: bold;">
+        <td>Total</td>
+        <td></td>
+        <td>${ grand_total_qty } item(s)</td>
+        <td>$${ grand_total_amount }</td>
+    </tr>
+    <tr style="font-weight: bold;">
+        <td></td>
+        <td></td>
+        <td>Payment</td>
+        <td>$${ charge_resp['Amount'] } ${ charge_resp['Currency'] }</td>
+    </tr>
+</table>
+</%block>

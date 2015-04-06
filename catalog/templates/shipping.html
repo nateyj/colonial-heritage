@@ -1,0 +1,26 @@
+<%inherit file="/catalog/templates/base.htm" />
+
+<%block name="content">
+
+<div>
+    <h1>Shipping Information</h1>
+</div>
+
+<div class="text-left">
+    <a href="/catalog/shipping.create/">Ship to New Address</a>
+    |
+    <a href="#">Change Address</a>
+    |
+    <a href="/catalog/shipping.edit/${ user.id }/${ address.id }/">Edit Address</a>
+</div>
+<div>
+    ${ user.first_name } ${ user.last_name }<br>
+    ${ address.address1 } ${ address.address2 }<br>
+    ${ address.city }, ${ address.state } ${ address.zip_code }<br>
+    ${ address.country }<br>
+    ${ phone.number } <a href="/account/phone.edit/${ phone.id }/">Edit</a>
+    | <a href="/account/phone.change/${ user.id }/">Change</a>
+</div>
+
+
+</%block>

@@ -1,0 +1,32 @@
+<%inherit file="/homepage/templates/base_ajax.htm" />
+
+<%block name="content">
+<p style="font-weight: bold;">Hello ${ user.get_full_name() },</p>
+<p>You have items that are past due. Please get off the couch and return them!</p>
+<table>
+    <tr>
+        <th>Rental Product</th>
+        <th>Date Out</th>
+        <th>Date Due</th>
+        <th>Days Overdue</th>
+        <th>Late Fee Price Per Day</th>
+        <th>Amount</th>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    %for rental_item in overdue_items:
+    <tr>
+        <td>${ rental_item.rental_product.product_specification.name }</td>
+        <td>${ overdue_items[rental_item][2].date.strftime('%b %d, %Y') }</td>
+        <td>${ rental_item.date_due.strftime('%b %d, %Y') }</td>
+        <td>${ days_overdue }</td>
+        <td>$${ overdue_items[rental_item][0] }</td>
+        <td>$${ overdue_items[rental_item][1] }</td>
+    </tr>
+    %endfor
+</table>
+</%block>

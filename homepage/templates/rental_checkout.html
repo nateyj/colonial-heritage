@@ -1,0 +1,51 @@
+<%inherit file="/homepage/templates/base.htm" />
+
+<%block name="content">
+<h1>Rental Summary</h1>
+<table class="table table-striped">
+    <tr>
+        <th>Rental Product</th>
+        <th>Price Per Day</th>
+        <th>Days Rented Out</th>
+        <th>Amount</th>
+    </tr>
+    %for product in rental_cart:
+    <tr>
+        <td>
+            ${ product.product_specification.name }
+            <div class="cart_item_container">
+                <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ product.product_specification.photo.image }"/>
+            </div>
+        </td>
+        <td>$${ product.price_per_day }</td>
+        <td>${ request.session['rental_days'] }</td>
+        <td>$${ rental_cart[product] }</td>
+    </tr>
+    %endfor
+    <tr class="total">
+        <td></td>
+        <td></td>
+        <td>
+            Due Date: ${ date_due.strftime('%b %d, %Y') }
+        </td>
+        <td>
+            Subtotal $${ transaction_subtotal }<br>
+            Discount ${ discount }%<br>
+            Total $${ request.session['rental_transaction_total'] }
+        </td>
+    </tr>
+</table>
+
+<form method="POST">
+    <div>
+        <h2>Billing Information</h2>
+    </div>
+    <table>
+        ${ form }
+    </table>
+    <br><br>
+    <button class="submit_btn btn btn-primary" type="submit">Place Order</button>
+    <a class="btn btn-primary" href="/homepage/rental_products/">Cancel</a>
+</form>
+
+</%block>

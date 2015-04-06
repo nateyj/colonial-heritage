@@ -1,0 +1,25 @@
+<%inherit file="/account/templates/base.htm" />
+
+<%block name="content">
+
+<form method="POST">
+    <div>
+        <h2>Shipping Information</h2>
+    </div>
+    <table>
+        ${ shipping_form }
+    </table>
+    <br><br>
+
+    <div>
+        <h2>Billing Information</h2>
+    </div>
+    <table>
+        ${ billing_form }
+    </table>
+    <br><br>
+    <button class="submit_btn btn btn-primary" type="submit">Place Order</button>
+    <a class="btn btn-primary" href="/catalog/product/">Cancel</a>
+</form>
+
+</%block>

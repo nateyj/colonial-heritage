@@ -1,0 +1,46 @@
+<%inherit file="/homepage/templates/base.htm" />
+
+<%block name="content">
+<h1>Rental Return Summary</h1>
+<table class="table table-striped">
+    <tr>
+        <th>Rental Product</th>
+        <th>Late Fee Amount</th>
+        <th>Damage Fee Amount</th>
+        <th>Damage Description</th>
+    </tr>
+    %for rental_item in rental_items:
+    <tr>
+        <td>
+            ${ rental_item }
+            <div class="cart_item_container">
+                <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ rental_item.rental_product.product_specification.photo.image }"/>
+            </div>
+        </td>
+        <td>${ rental_items[rental_item][0] }</td>
+        <td>${ rental_items[rental_item][1] }</td>
+        <td>${ rental_items[rental_item][2] }</td>
+    </tr>
+    %endfor
+    <tr class="total">
+        <td>Total</td>
+        <td>$${ late_fee_total }</td>
+        <td>$${ damage_fee_total }</td>
+        <td>$${ request.session['fee_total'] }</td>
+    </tr>
+</table>
+
+
+<form method="POST">
+    <div>
+        <h2>Billing Information</h2>
+    </div>
+    <table>
+        ${ form }
+    </table>
+    <br><br>
+    <button class="submit_btn btn btn-primary" type="submit">Finalize Return</button>
+    <a class="btn btn-primary" href="/homepage/rental_return/">Cancel</a>
+</form>
+
+</%block>

@@ -1,0 +1,38 @@
+<%inherit file="/homepage/templates/base.htm" />
+
+<%block name="content">
+
+<div class="text-left">
+    <h1 class="page-header">Rental Products</h1>
+</div>
+<div id="search_results_container">
+    <div id="custom-search-input">
+        <div class="input-group col-md-3">
+            <input id="search" type="text" class="form-control" placeholder="Search">
+            <span class="input-group-btn">
+                <button id="search_btn" class="btn btn-primary" type="button">
+                    Clear <span class=" glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+    <div id="search_results">
+        %for product in products:
+        <div class="item_container">
+            <a href="/catalog/rental_products.detail/${ product.id }">
+                <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ product.product_specification.photo.image }"/>
+
+                <div class="text-muted text-center">${ product.product_specification.name }</div>
+            </a>
+
+            <div class="text-center">
+                <button data-product_id="${ product.id }" class="add_to_cart_btn btn btn-warning btn-xs">Add to Cart
+                </button>
+            </div>
+        </div>
+        %endfor
+    </div>
+    <!--search_results-->
+</div>  <!--search_results_container-->
+
+</%block>

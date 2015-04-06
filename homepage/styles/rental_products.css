@@ -1,0 +1,13 @@
+.item_container {
+    display: inline-block;
+    margin: 12px;
+}
+
+.item_container > a > img {
+    max-height: 200px;
+    max-width: 200px;
+}
+
+.form-group {
+    width: 125px;
+}

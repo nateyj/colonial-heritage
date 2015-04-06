@@ -1,0 +1,21 @@
+img {
+    max-height: 150px;
+    max-width: 200px;
+}
+
+.total {
+    font-size: large;
+    font-weight: bold;
+}
+
+#buttons {
+    display: inline-block;
+}
+
+#discount {
+    width: 50px;
+}
+
+#datepicker {
+    width: 100px;
+}

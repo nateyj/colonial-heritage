@@ -1,0 +1,13 @@
+.area-name {
+    font-size: large;
+}
+
+.item_container {
+    display: inline-block;
+    margin: 12px;
+}
+
+.item_container > img {
+    max-height: 200px;
+    max-width: 200px;
+}

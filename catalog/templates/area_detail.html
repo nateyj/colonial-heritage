@@ -1,0 +1,27 @@
+<%inherit file="/catalog/templates/base.htm" />
+
+<%block name="title">
+<title>${ area.public_event.name } - ${ area.name }</title>
+</%block>
+
+<%block name="content">
+<div id="area_info">
+    <h1 class="page-header">${ area.name }</h1>
+    <a href="/catalog/event/" class="btn btn-warning pull-right">Back to Event</a>
+    <img id="area_img" src="${ STATIC_URL }catalog/media/images/area/${ area.area_photos.all()[0].image }"/>
+    <br/><br/>
+
+    <p>${ area.description }</p>
+</div>
+<h3>Items for Sale</h3>
+<div>
+    %for item in area.artisan_items.all():
+    <div class="item_container">
+        <img src="${ STATIC_URL }catalog/media/images/artisan_item/${ item.artisan_item_photos.all()[0].image }"/>
+
+        <div class="item-info text-muted text-center">${ item.name }</div>
+        <div class="item-info text-muted text-center">$${ item.price }</div>
+    </div>
+    %endfor
+</div>
+</%block>
