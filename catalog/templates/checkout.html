@@ -1,0 +1,20 @@
+<%inherit file="/catalog/templates/base.htm" />
+
+<%block name="content">
+%if request.user.is_authenticated():
+<div class="content">
+    <h1>Checkout</h1>
+</div>
+<form method="POST">
+    <div>Billing Information<br><br></div>
+    <table>
+        ${ billing_form }
+    </table>
+    <br><br>
+    <button id="place_order" type="submit" class="btn btn-warning">Place Order</button>
+    <a href="/catalog/product/" class="btn btn-primary">Cancel</a>
+</form>
+%else:
+<div>You must have an account and be logged in to checkout.</div>
+%endif
+</%block>

@@ -1,0 +1,23 @@
+<%inherit file="/catalog/templates/base.htm" />
+
+<%block name="content">
+
+<div class="text-left">
+    <h1 class="page-header">${ product.product_specification.name }</h1>
+</div>
+<div>
+    <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ product.product_specification.photo.image }"/>
+</div>
+<div>
+    <span class="title">Description:</span><br>
+    ${ product.product_specification.description }<br><br>
+</div>
+<div>
+    <span class="title">Price:</span> <span class="price">$${ product.product_specification.price }</span><br><br>
+</div>
+<div>
+    Quantity: <input id="qty" type="number" value="1">
+    <button data-product_id="${ product.id }" id="detail_add_to_cart_btn" class="btn btn-warning">Add to Cart</button>
+</div>
+
+</%block>

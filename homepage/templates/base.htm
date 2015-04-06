@@ -1,0 +1,177 @@
+## this is the skeleton of all pages on in this app - it defines the basic html tags
+
+## set up a StaticRenderer object to enable the CSS/JS automatic inclusion magic.
+<%! from django_mako_plus.controller import static_files %>
+<%  static_renderer = static_files.StaticRenderer(self) %>
+
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+    <%block name="title">
+    <title>Colonial Heritage Foundation</title>
+</
+%block>
+
+<%block name="meta">
+<meta name="keywords" content="Colonial, festival, heritage, Utah, history, America">
+<meta name="author" content="Colonial Heritage Foundation">
+<meta name="description"
+      content="Colonial Heritage Foundation puts on the largest colonial festival west of the Mississippi. Volunteer, attend, shop, or rent colonial items at this week-long event. Fun family and friends.">
+</%block>
+
+## add any site-wide scripts or CSS here; for example, jquery:
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="${ STATIC_URL }homepage/media/jquery.form.js"></script>
+<script src="${ STATIC_URL }homepage/scripts/jquery.loadmodal.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<link rel="shortcut icon" type="image/jpeg" href="${ STATIC_URL }homepage/media/favicon.ico">
+
+## render the css with the same name as this page
+${ static_renderer.get_template_css(request, context)  }
+
+</head>
+
+<body>
+
+<div id="header" class="container-fluid">
+    <header>
+        <div>
+            Colonial Heritage Foundation
+              <span class="label label-warning">
+                  <span class="glyphicon glyphicon-tower" aria-hidden="true"></span>
+              </span>
+        </div>
+    </header>
+    <%block name="nav">
+    <div id="outside_nav">
+        <nav class="navbar navbar-inverse">
+            <div id="inside_navbar" class="container-fluid">
+                <ul class="nav navbar-nav">
+                    <li role="presentation" ${
+                    'class="active"' if request.dmp_router_page == 'index' else '' }>
+                    <a href="/homepage/index">Home</a>
+                    </li>
+                    %if request.user.is_authenticated() and request.user.groups.all()[0].name == 'Administrator':
+                    <li role="presentation" ${
+                    'class="active"' if request.dmp_router_page == 'users' else '' }>
+                    <a href="/homepage/users">Users</a>
+                    </li>
+                    %endif
+                    %if request.user.is_authenticated() and (request.user.groups.all()[0].name == 'Manager' or
+                    request.user.groups.all()[0].name == 'Administrator'):
+                    <li role="presentation" ${
+                    'class="active"' if request.dmp_router_page == 'product' else '' }>
+                    <a href="/homepage/product">Products</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Owners
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li ${
+                            'class="active"' if request.dmp_router_page == 'person' else '' }>
+                            <a href="/homepage/person/">Individuals</a>
+                    </li>
+                    <li role="presentation" ${
+                    'class="active"' if request.dmp_router_page == 'organization' else '' }>
+                    <a href="/homepage/organization/">Organizations</a>
+                    </li>
+                </ul>
+                </li>
+                <li role="presentation" ${
+                'class="active"' if request.dmp_router_page == 'rental_items' else '' }>
+                <a href="/homepage/rental_items">Rental Items</a>
+                </li>
+                <li role="presentation" ${
+                'class="active"' if request.dmp_router_page == 'report' else '' }>
+                <a href="/homepage/report">Overdue Items Report</a>
+                </li>
+                %endif
+                <li role="presentation" ${
+                'class="active"' if request.dmp_router_page == 'rental_return' else '' }>
+                <a href="/homepage/rental_return/">Check In Rental Items</a>
+                </li>
+                <li role="presentation" ${
+                'class="active"' if request.dmp_router_page == 'rental_products' else '' }>
+                <a href="/homepage/rental_products">Rental Products</a>
+                </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    %if request.user.is_authenticated():
+                    <p class="navbar-text">Welcome, ${ request.user.first_name}!</p>
+                    <button type="button" id="view_rental_cart" class="btn btn-warning navbar-btn">
+                        View Cart <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                    </button>
+                    <a href="/homepage/login.logout_view" class="btn btn-warning navbar-btn">Sign Out</a>
+                    %else:
+                    <button id="show_login_dialog_nav" type="button" class="btn btn-warning navbar-btn">Sign In</button>
+                    %endif
+                </ul>
+            </div>
+        </nav>
+    </div>
+</
+%block>
+</div>
+
+<div id="leftside" class="col-md-2">
+    <div id="buttons" style="text-align: center;">
+        <p style="text-align:center">Which color do you prefer?</p>
+        <button type="button" class="btn btn-primary btn-lg" style="width:75px;">Blue</button>
+        <button type="button" class="btn btn-success btn-lg">Green</button>
+    </div>
+    <!--buttons-->
+    <p style="margin-top:20px; text-align:center;">
+        <button type="button" class="btn btn-info btn-sm">
+            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Like
+        </button>
+    </p>
+</div>
+<!--leftside-->
+
+<div id="center" class="col-md-10">
+    <div id="login_dialog" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Sign In</h4>
+                </div>
+                <div class="modal-body">
+                    <p>One fine body&hellip;</p>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <%block name="content">
+    Site content goes here in sub-templates.
+</
+%block>
+</div> <!-- center -->
+
+<div id="footer" class="container-fluid">
+    <footer>
+        <p style="text-align:center;">
+            <span class="glyphicon glyphicon-copyright-mark" aria-hidden="true"></span>
+            Bigfoot
+        </p>
+    </footer>
+</div>
+
+## render the JS with the same name as this page
+${ static_renderer.get_template_js(request, context) }
+
+</body>
+
+</html>

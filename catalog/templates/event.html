@@ -1,0 +1,31 @@
+<%inherit file="base.htm" />
+
+<%block name="title">
+<title>${ public_event.name }</title>
+</%block>
+
+<%block name="content">
+
+<div id="festival_info">
+    <h1 class="page-header">${ public_event.name }</h1>
+    <h4>Dates: ${ event.start_date.strftime('%b %d, %Y') } - ${ event.end_date.strftime('%b %d, %Y') }</h4>
+    <img id="festival" src="${ STATIC_URL }catalog/media/images/festival/${ public_event_photo.image }"/>
+    <br/><br/>
+
+    <p>${ public_event.description }</p>
+</div>
+<h3>Areas</h3>
+<div>
+    %for area in areas:
+    <div class="item_container">
+        <img src="${ STATIC_URL }catalog/media/images/area/${ area.area_photos.all()[0].image }"/>
+
+        <div class="area-name text-muted text-center">${ area.name }</div>
+        <div class="text-center">
+            <a href="/catalog/event.area_detail/${ area.name }" class="btn btn-success">View Details</a>
+        </div>
+    </div>
+    %endfor
+</div>
+
+</%block>

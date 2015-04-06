@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+    <title>REST API Example</title>
+    <script src="http:///ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <script src="http:///netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+</head>
+<body style="padding: 2em;">
+<h1>REST API Example</h1>
+        <pre>
+            Endpoint: http://dithers.cs.byu.edu/iscore/api/v1/charges
+            Valid credit card: Visa, 4732817300654, Exp. 10/15, CVC 411, Cardholder Name: Cosmo Limesandal
+
+            Sample Charge Creation:
+            curl http://dithers.cs.byu.edu/iscore/api/v1/charges \
+            -d apiKey=YOUR_API_KEY \
+            -d currency=usd \
+            -d amount=5.99 \
+            -d type=Visa \
+            -d number=4732817300654 \
+            -d exp_month=10 \
+            -d exp_year=15 \
+            -d cvc=411 \
+            -d "name=Cosmo Limesandal" \
+            -d "description=Charge for cosmo@is411.byu.edu"
+
+            Query Charges:
+            curl --get http://dithers.cs.byu.edu/iscore/api/v1/charges \
+            -d apiKey=YOUR_API_KEY
+        </pre>
+<button type="button" class="btn btn-primary" id="charge">Charge</button>
+<button type="button" class="btn btn-success" id="queryCharges">Query Charges</button>
+<input type="text" id="chargeId">
+<br/>
+
+<div id="message"></div>
+<script type="text/javascript">
+    $(function () {
+        $('#charge').click(function () {
+            $('#message').text('Charging...');
+            $.ajax({
+                url: 'http://dithers.cs.byu.edu/iscore/api/v1/charges', // The endpoint we’re talking to
+                type: 'post', // Method type (an HTTP verb like ‘post’ or ‘get’)
+                data: {
+                    apiKey: 'bd4c3e68deac00a9d76b8646e02eb328', // API key is needed for all REST requests to our endpoint
+                    currency: 'usd', // Currency must be US dollars
+                    amount: $('#chargeId').val(), // Amount to the exact penny
+                    type: 'Visa', // Credit card type (Visa, MasterCard, AmEx, etc.)
+                    number: '4732817300654', // Credit card number (should have already passed Luhn test)
+                    exp_month: '10', // Two-digit expiration month, left padded with 0 if needed
+                    exp_year: '15', // Last two digits of card expiration year
+                    cvc: '411', // Standard verification code
+                    name: 'Cosmo Limesandal', // Full name as it appears on the card (for verification)
+                    description: 'Charge for cosmo@is411.byu.edu' // Description can be up to 255 characters
+                }, // Object with data fields this request needs
+                dataType: 'json', // The type of data we want the server to return
+                success: function (data) {
+                    if (typeof(data['error']) !== 'undefined') {
+                        $("#message").html('<font style="color: red;">Failure: ' + data['error'] + '</font>');
+                    }//problem with the API that we've sent
+                    else {
+                        $("#message").html('<font style="color: green;">New Charge: ' + JSON.stringify(data) + '</font>');
+                    }
+                }, // Callback function to invoke if the call works error: function (data) { ... } // Callback function to invoke if the call fails
+                error: function (data) {
+                    $("#message").html('<font style="color: red;">Error: ' + JSON.stringify(data) + '</font>');
+                }//deals with any problem sending the ajax
+            });//ajax
+        });//click charge
+
+        $('#queryCharges').on("click", function () {
+            var queryUrl = 'http://dithers.cs.byu.edu/iscore/api/v1/charges';
+            var query_input = $('#chargeId').val();
+
+            if (typeof(query_input) !== 'undefined') {
+                queryUrl = queryUrl + '/' + query_input;
+            }
+
+            $.ajax({
+                url: queryUrl, // The endpoint we’re talking to
+                type: 'get', // Method type (an HTTP verb like ‘post’ or ‘get’)
+                data: {
+                    apiKey: 'bd4c3e68deac00a9d76b8646e02eb328' // API key is needed for all REST requests to our endpoint
+                }, // Object with data fields this request needs
+                dataType: 'json', // The type of data we want the server to return
+                success: function (data) {
+                    if (typeof(data['error']) !== 'undefined') {
+                        $("#message").html('<font style="color: red;">Failure: ' + data['error'] + '</font>');
+                    }//problem with the API that we've sent
+                    else {
+                        $("#message").html('<font style="color: green;">New Charge: ' + JSON.stringify(data) + '</font>');
+                    }
+                }, // Callback function to invoke if the call works error: function (data) { ... } // Callback function to invoke if the call fails
+                error: function (data) {
+                    $("#message").html('<font style="color: red;">Error: ' + JSON.stringify(data) + '</font>');
+                }//deals with any problem sending the ajax
+            });//ajax
+        });//click queryCharges
+    });//ready
+</script>
+</body>
+</html>

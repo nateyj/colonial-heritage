@@ -1,0 +1,44 @@
+<%inherit file="base.htm" />
+
+<%block name="content">
+
+<div class="text-left">
+    <h1 class="page-header">Organizations</h1>
+</div>
+
+<div class="text-left" style="margin-bottom: 20px;">
+    <a href="/homepage/organization.create/" class="btn btn-warning">Add New Organization</a>
+</div>
+
+<table id="organization_table" class="table table-striped">
+    <tr>
+        <th>Actions</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>State</th>
+        <th>ZIP</th>
+        <th>Country</th>
+        <th>Email</th>
+    </tr>
+    %for organization in organizations:
+    <tr>
+        <td>
+            <a href="/homepage/organization.edit/${ organization.id }/">Edit</a>
+            |
+            <a href="/homepage/organization.delete/${ organization.id }/">Delete</a>
+        </td>
+        <td>${ organization.id }</td>
+        <td>${ organization.given_name }</td>
+        <td>${ organization.address.address1 }</td>
+        <td>${ organization.address.city }</td>
+        <td>${ organization.address.state }</td>
+        <td>${ organization.address.zip_code }</td>
+        <td>${ organization.address.country }</td>
+        <td>${ organization.email }</td>
+    </tr>
+    %endfor
+</table>
+
+</%block>

@@ -1,0 +1,40 @@
+<%inherit file="base.htm" />
+
+<%block name="content">
+
+<div class="text-left">
+    <h1 class="page-header">Products</h1>
+</div>
+
+<div class="text-left" style="margin-bottom: 20px;">
+    <a href="/homepage/product.create/" class="btn btn-warning">Add New Product</a>
+</div>
+
+<table id="product_table" class="table table-striped">
+    <tr>
+        <th>Actions</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Current Price</th>
+        <th>Producer</th>
+    </tr>
+    %for product in products:
+    <tr>
+        <td>
+            <a href="/homepage/product.edit/${ product.id }/">Edit</a>
+            |
+            <a href="/homepage/product.delete/${ product.id }/">Delete</a>
+        </td>
+        <td>${ product.id }</td>
+        <td>${ product.name }</td>
+        <td>${ product.description }</td>
+        <td>${ product.category }</td>
+        <td>$ ${ product.current_price }</td>
+        <td>${ product.producer.given_name }</td>
+    </tr>
+    %endfor
+</table>
+
+</%block>

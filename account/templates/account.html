@@ -1,0 +1,61 @@
+<%inherit file="/account/templates/base.htm" />
+
+<%block name="title">
+<title>My Account</title>
+</%block>
+
+<%block name="content">
+
+<div>
+    <h1>My Account</h1>
+</div>
+<div>
+    <a class="btn btn-primary" href="/account/account.edit/${ user.id }/">Edit</a>
+    <a class="btn btn-primary" href="/account/password.edit/${ user.id }/">Change Password</a>
+</div>
+<table id="users_table" class="table table-striped">
+    <tr>
+        <td>First Name</td>
+        <td>${ user.first_name }</td>
+
+    </tr>
+    <tr>
+        <td>Last Name</td>
+        <td>${ user.last_name }</td>
+
+    </tr>
+    <tr>
+        <td>Username</td>
+        <td>${ user.username }</td>
+
+    </tr>
+    <tr>
+        <td>Security Question</td>
+        <td>${ user.security_question }</td>
+    </tr>
+    <tr>
+        <td>Security Answer</td>
+        <td>${ user.security_answer }</td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td>${ user.email }</td>
+    </tr>
+    <tr>
+        <td>Phone</td>
+        <% user_phones = user.user_phones.all() %>
+        %if user_phones != []:
+        <td>
+            %for phone in user_phones:
+            ${ phone.number } (${ phone.type }) <a href="/account/phone.edit/${ phone.id }/">Edit</a>
+            | <a href="/account/phone.delete/${ phone.id }/">Delete</a><br>
+            %endfor
+        </td>
+        %else:
+        <td>None</td>
+        %endif
+    </tr>
+</table>
+
+
+</%block>

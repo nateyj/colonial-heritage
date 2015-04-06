@@ -1,0 +1,20 @@
+<%inherit file="base.htm" />
+
+<%block name="content">
+
+<form method="POST">
+    <div class="form-group">
+        <table>
+            ${ form }
+        </table>
+    </div>
+    <button class="btn btn-primary" type="submit">Save</button>
+
+    %if request.urlparams[1] == 'new':
+    <a class="btn btn-primary" href="/homepage/users.delete/${ request.urlparams[0] }/">Cancel</a>
+    %else:
+    <a class="btn btn-primary" href="/homepage/users/">Cancel</a>
+    %endif
+</form>
+
+</%block>

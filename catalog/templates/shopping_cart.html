@@ -1,0 +1,61 @@
+<%inherit file="/catalog/templates/base_ajax.htm" />
+
+<%block name="content">
+
+%if shopping_cart == {}:
+<div>Your cart is empty</div>
+%else:
+<table class="table table-hover">
+    <%
+    grand_total_price = 0
+    grand_total_qty = 0
+    %>
+    <tr>
+        <th>ID</th>
+        <th>Product</th>
+        <th>Description</th>
+        <th>Product Price</th>
+        <th>Quantity</th>
+        <th>Amount</th>
+        <th></th>
+    </tr>
+    %for product in shopping_cart:
+    <%
+    qty = shopping_cart[product]
+    price = product.product_specification.price * qty
+    grand_total_price += price
+    grand_total_qty += shopping_cart[product]
+    %>
+    <tr>
+        <td>${ product.id }</td>
+        <td>
+            ${ product.product_specification.name }
+            <div class="cart_item_container">
+                <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ product.product_specification.photo.image }"/>
+            </div>
+        </td>
+        <td>${ product.product_specification.description }</td>
+        <td>$${ product.product_specification.price }</td>
+        <td>${ qty }</td>
+        <td>$${ price }</td>
+        <td>
+            <button data-product_id="${ product.id }" type="button" class="remove btn btn-warning">Remove</button>
+        </td>
+    </tr>
+    %endfor
+    <tr class="total">
+        <td>Total</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>${ grand_total_qty } item(s)</td>
+        <td>$${ grand_total_price }</td>
+        <td></td>
+    </tr>
+</table>
+<div class="text-right">
+    <button type="button" id="shop" class="btn btn-primary">Continue Shopping</button>
+    <a href="/catalog/checkout.shipping" class="btn btn-primary">Checkout</a>
+</div>
+%endif
+</%block>

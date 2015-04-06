@@ -1,0 +1,48 @@
+<%inherit file="/homepage/templates/base.htm" />
+
+<%block name="nav">
+
+<div id="outside_nav">
+    <nav class="navbar navbar-inverse">
+        <div id="inside_navbar" class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li role="presentation" ${
+                'class="active"' if request.dmp_router_page == 'index' else '' }>
+                <a href="/catalog/index">Home</a>
+                </li>
+                <li role="presentation" ${
+                'class="active"' if request.dmp_router_page == 'product' else '' }>
+                <a href="/catalog/product">Products</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Events
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ${
+                        'class="active"' if request.dmp_router_page == 'event' else '' }>
+                        <a href="/catalog/event/">Colonial Heritage Festival</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+            <ul id="navbar_right" class="nav navbar-nav navbar-right">
+                %if request.user.is_authenticated():
+                <p class="navbar-text">Welcome, ${ request.user.first_name }!</p>
+                <li role="presentation" ${
+                'class="active"' if request.dmp_router_page == 'account' else '' }>
+                <a href="/account/account">My Account</a>
+                </li>
+                <button type="button" id="view_cart" class="btn btn-warning navbar-btn">
+                    View Cart <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                </button>
+                <a href="/account/index2.logout_view/" class="btn btn-warning navbar-btn">Sign Out</a>
+                %else:
+                <button id="show_login_dialog_nav" type="button" class="btn btn-warning navbar-btn">Sign In</button>
+                <a href="/account/account.create/" class="btn btn-warning navbar-btn">Create Account</a>
+                %endif
+            </ul>
+        </div>
+    </nav>
+</div>
+
+</%block>

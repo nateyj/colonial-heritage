@@ -1,0 +1,47 @@
+<%inherit file="/homepage/templates/base.htm" />
+
+<%block name="content">
+
+%if rental_items == []:
+<h1>${ customer.get_full_name() }, you currently have no rental items that are checked out.</h1>
+%else:
+<h1>Checked Out Rental Items for ${ customer.get_full_name() }</h1>
+%for transaction in rental_items:
+<h3>Transaction ID: ${ transaction.id }</h3>
+<table class="table table-striped">
+    <tr>
+        <th>Line Item ID</th>
+        <th>Product</th>
+        <th>Date Due</th>
+        <th>Damage</th>
+        <th>Check In</th>
+    </tr>
+    %for item in rental_items[transaction]:
+    <tr class="item_container">
+        <td class="rental_item_id">${ item.id }</td>
+        <td>
+            ${ item }
+            <div>
+                <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ item.rental_product.product_specification.photo.image }"/>
+            </div>
+        </td>
+        <td>${ item.date_due.strftime('%b %d, %Y') }</td>
+        <td>
+            Fee
+            <input type="number" class="damage_fee">
+            <br/>
+            Description
+            <textarea class="damage_desc"></textarea>
+        </td>
+        <td>
+            <button type="button" class="return btn btn-primary">Check In</button>
+        </td>
+    </tr>
+    %endfor
+</table>
+<div>
+    <a href="/homepage/rental_return.summary" id="proceed" class="btn btn-primary">Proceed to Check In</a>
+</div>
+%endfor
+%endif
+</%block>
