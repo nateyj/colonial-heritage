@@ -265,13 +265,15 @@ def process_request(request):
     except hmod.SiteUser.DoesNotExist:
         return HttpResponseRedirect('/homepage/rental_products')
 
-    form = BillingForm(request, initial={
-        'name': 'Cosmo Limesandal',
-        'credit_card_no': '4732817300654',
-        'cvc': '411',
-        'exp_month': '10',
-        'exp_year': '2015'
-    })
+    # form = BillingForm(request, initial={
+    #     'name': 'Cosmo Limesandal',
+    #     'credit_card_no': '4732817300654',
+    #     'cvc': '411',
+    #     'exp_month': '10',
+    #     'exp_year': '2015'
+    # })
+
+    form = BillingForm(request)
 
     if request.method == 'POST':
         form = BillingForm(request, request.POST)

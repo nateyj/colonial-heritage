@@ -381,13 +381,7 @@ def shipping(request):
             'phone_type': phone.type,
         })
 
-    billing_form = BillingForm(request, initial={
-        'name': 'Cosmo Limesandal',
-        'credit_card_no': '4732817300654',
-        'cvc': '411',
-        'exp_month': '10',
-        'exp_year': '2015'
-    })
+    billing_form = BillingForm(request)
 
     if request.method == 'POST':
         shipping_form = ShippingForm(request.POST)  #redisplays page with posted information
