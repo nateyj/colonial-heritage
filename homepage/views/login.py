@@ -38,10 +38,8 @@ class LoginForm(forms.Form):
             try:
                 c = Connection(s, auto_bind=True, client_strategy=STRATEGY_SYNC,
                                user='%s@westonrhodes.local' % username, password=password, authentication=AUTH_SIMPLE)
-            except:
-                raise forms.ValidationError("You are not in our Active Directory.")
 
-            if c is not None:
+                if c is not None:
                 # now that we know it is a valid user, get the user account from Django
                 # u = hmod.SiteUser.objects.get_or_create(username=username)
                 # # the info is in the c object c.something
@@ -51,14 +49,22 @@ class LoginForm(forms.Form):
                 # u.email = c.
                 # u.set_password(c.password)
                 # u.save()
-                print("there is a C!")
-                user = authenticate(username=username, password=password)
-            else:
-                print("no C is floosy")
-                user = authenticate(username=username, password=password)
+                    print("there is a C!")
+                    user = authenticate(username=username, password=password)
 
-            if user == None:
-                raise forms.ValidationError("The username or password you entered was incorrect.")
+                    if user == None:
+                        raise forms.ValidationError("The username or password you entered was incorrect.")
+            except:
+                try:
+                    user = authenticate(username=username, password=password)
+
+                    if user == None:
+                        raise forms.ValidationError("The username or password you entered was incorrect.")
+                except:
+                    raise forms.ValidationError("The username or password you entered was incorrect.")
+
+                # raise forms.ValidationError("You are not in our Active Directory.")
+
 
         return self.cleaned_data
 

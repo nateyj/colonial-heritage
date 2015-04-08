@@ -122,26 +122,22 @@ o_toysrus.address = address2
 o_toysrus.save()
 
 # creating employees
-e = hmod.Employee()
-e.given_name = u_nate.first_name
-e.email = u_nate.email
-e.address = address1
-e.last_name = u_nate.last_name
-e.birth_date = '1990-08-20'
-e.account = u_nate
-e.date_hired = '2015-04-01'
-e.wage = 20
-e.save()
-
-e = hmod.Employee()
-e.given_name = u_weston.first_name
-e.address = address2
-e.last_name = u_weston.last_name
-e.birth_date = '1992-08-14'
-e.account = u_weston
-e.date_hired = '2015-04-01'
-e.wage = 25
-e.save()
+for data in [
+    [u_nate.first_name, u_nate.email, address1, u_nate.last_name, '1990-08-20', u_nate, '2015-04-01', 20],
+    [u.first_name, u.email, address1, u.last_name, '1992-04-22', u, '2015-04-01', 22.50],
+    [u_weston.first_name, u_weston.email, address2, u_weston.last_name, '1992-08-14', u_weston, '2015-04-01', 25],
+    [u_erick.first_name, u_erick.email, address2, u_erick.last_name, '1990-08-07', u_erick, '2015-04-01', 27.50],
+]:
+    e = hmod.Employee()
+    e.given_name = data[0]
+    e.email = u_nate.email
+    e.address = data[2]
+    e.last_name = data[3]
+    e.birth_date = data[4]
+    e.account = data[5]
+    e.date_hired = data[6]
+    e.wage = data[7]
+    e.save()
 
 
 # creating data for Phone
