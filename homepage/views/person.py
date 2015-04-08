@@ -34,24 +34,39 @@ def edit(request):
 
     try:
         person = hmod.Person.objects.get(id=request.urlparams[0])
-        phone = person.org_phones.get(organization=person)
     except hmod.Person.DoesNotExist:
         return HttpResponseRedirect('/homepage/person/')
 
-    form = PersonEditForm(initial={
-        'First_Name': person.given_name,
-        'Last_Name': person.last_name,
-        'Birth_Date': person.birth_date,
-        'Address': person.address.address1,
-        'City': person.address.city,
-        'State': person.address.state,
-        'ZIP': person.address.zip_code,
-        'country': person.address.country,
-        'number': phone.number,
-        'extension': phone.extension,
-        'type': phone.type,
-        'Email': person.email,
-    })
+    # if the person has no phone numbers tied to them
+    if person.org_phones.count() != 0:
+        phone = person.org_phones.all()[0]  #just get the first phone number tied to this person
+
+        form = PersonEditForm(initial={
+            'First_Name': person.given_name,
+            'Last_Name': person.last_name,
+            'Birth_Date': person.birth_date,
+            'Address': person.address.address1,
+            'City': person.address.city,
+            'State': person.address.state,
+            'ZIP': person.address.zip_code,
+            'country': person.address.country,
+            'number': phone.number,
+            'extension': phone.extension,
+            'type': phone.type,
+            'Email': person.email,
+        })
+    else:
+        form = PersonEditForm(initial={
+            'First_Name': person.given_name,
+            'Last_Name': person.last_name,
+            'Birth_Date': person.birth_date,
+            'Address': person.address.address1,
+            'City': person.address.city,
+            'State': person.address.state,
+            'ZIP': person.address.zip_code,
+            'country': person.address.country,
+            'Email': person.email,
+        })
 
     if request.method == 'POST':
         form = PersonEditForm(request.POST)  # POST is a dictionary of all the data sent with the form
@@ -70,10 +85,20 @@ def edit(request):
             person.address.country = form.cleaned_data['country']
             person.address.save()
 
-            phone.number = form.cleaned_data['number']
-            phone.extension = form.cleaned_data['extension']
-            phone.type = form.cleaned_data['type']
-            phone.save()
+            if person.org_phones.count() == 0:
+                phone = hmod.Phone()
+                phone.number = form.cleaned_data['number']
+                phone.extension = form.cleaned_data['extension']
+                phone.type = form.cleaned_data['type']
+                phone.organization = person
+                phone.save()
+            else:
+                phone = person.org_phones.all()[0]
+                phone.number = form.cleaned_data['number']
+                phone.extension = form.cleaned_data['extension']
+                phone.type = form.cleaned_data['type']
+                phone.organization = person
+                phone.save()
 
             return HttpResponseRedirect('/homepage/person/')
 
@@ -209,7 +234,7 @@ class PersonEditForm(forms.Form):
     State = forms.ChoiceField(label='State*', widget=forms.Select, choices=STATE_CHOICES)
     ZIP = forms.IntegerField(label='ZIP*', )
     country = forms.CharField(max_length=50, required=False)
-    number = forms.CharField(label='Phone Number', required=False, max_length=15)
+    number = forms.CharField(label='Phone Number', required=False, max_length=15, help_text='e.g., xxx-xxx-xxxx')
     extension = forms.IntegerField(required=False)
     type = forms.ChoiceField(widget=forms.Select, choices=TYPE_CHOICES, required=False)
     Email = forms.EmailField(required=False, max_length=100)
@@ -258,6 +283,9 @@ def create(request):
 def delete(request):
     phone_id = request.urlparams[1]
 
+    if phone_id == '':
+        print("grabbed an empty phone ID")
+
     try:
         person = hmod.Person.objects.get(id=request.urlparams[0])
     except hmod.Person.DoesNotExist:
@@ -265,7 +293,7 @@ def delete(request):
 
     person.address.delete()
 
-    if phone_id != None:
+    if phone_id != '':
         try:
             phone = hmod.Phone.objects.get(id=phone_id)
         except hmod.Phone.DoesNotExist:
@@ -273,7 +301,7 @@ def delete(request):
 
         phone.delete()
     else:
-        for phone in person.user_phones.all():
+        for phone in person.org_phones.all():
             phone.delete()
 
     person.delete()

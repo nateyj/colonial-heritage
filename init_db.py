@@ -126,7 +126,7 @@ for data in [
     [u_nate.first_name, u_nate.email, address1, u_nate.last_name, '1990-08-20', u_nate, '2015-04-01', 20],
     [u.first_name, u.email, address1, u.last_name, '1992-04-22', u, '2015-04-01', 22.50],
     [u_weston.first_name, u_weston.email, address2, u_weston.last_name, '1992-08-14', u_weston, '2015-04-01', 25],
-    [u_erick.first_name, u_erick.email, address2, u_erick.last_name, '1990-08-07', u_erick, '2015-04-01', 27.50],
+    # [u_erick.first_name, u_erick.email, address2, u_erick.last_name, '1990-08-07', u_erick, '2015-04-01', 27.50],
 ]:
     e = hmod.Employee()
     e.given_name = data[0]
