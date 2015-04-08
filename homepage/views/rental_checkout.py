@@ -207,13 +207,14 @@ def process_request(request):
     #     print("discount is NOT an int.")
 
     rental_days_timedelta = due_date_datetime - today
+    rental_days_int = rental_days_timedelta.days + 1
     # if isinstance(rental_days_timedelta.days, int):
     #     print("rental_days_timedelta.days is an int.")
     # else:
     #     print("rental_days_timedelta.days is NOT an int.")
-    print("Rental Days: %d" % rental_days_timedelta.days)
+    print("Rental Days: %d" % rental_days_int)
     ################################# timedelta.days is an int
-    request.session['rental_days'] = rental_days_timedelta.days
+    request.session['rental_days'] = rental_days_int
 
     #if transaction total is not a decimal it can't compute as a float (transaction total) with a decimal (product price) and string (quantity)
     transaction_subtotal_decimal = Decimal('0')
@@ -224,7 +225,7 @@ def process_request(request):
         except hmod.RentalProduct.DoesNotExist:
             return HttpResponseRedirect('/homepage/rental_products')
         # calculate subtotal for each rental product by multiplying the days rented by the price per day
-        rental_item_subtotal_decimal = rental_product.price_per_day * rental_days_timedelta.days
+        rental_item_subtotal_decimal = rental_product.price_per_day * rental_days_int
         # if isinstance(rental_item_subtotal, Decimal):
         #     print("rental_item_subtotal is a Decimal.")
         # else:

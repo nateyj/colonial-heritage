@@ -2,8 +2,8 @@
 
 <%block name="content">
 
-%if rental_items == []:
-<h1>${ customer.get_full_name() }, you currently have no rental items that are checked out.</h1>
+%if rental_items == {}:
+<h1>${ customer.get_full_name() } currently has no rental items that are checked out.</h1>
 %else:
 <h1>Checked Out Rental Items for ${ customer.get_full_name() }</h1>
 %for transaction in rental_items:

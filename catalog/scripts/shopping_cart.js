@@ -8,4 +8,8 @@ $(function () {
             width: '700px'
         }); //loadmodal
     }); //click
+
+    $('#shop').on('click', function () {
+        $('#jquery-loadmodal-js').modal('hide');
+    });//click
 }); //ready

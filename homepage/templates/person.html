@@ -42,8 +42,21 @@
         <td>${ person.address.state }</td>
         <td>${ person.address.zip_code }</td>
         <td>${ person.address.country }</td>
-        <td>${ person.org_phones.get(organization=person).number }</td>
-        <td>${ person.org_phones.get(organization=person).type }</td>
+
+        %if person.org_phones.count() != 0:
+            %for phone in person.org_phones.all():
+                <td>
+                    ${ phone.number }<br/>
+                </td>
+                <td>
+                    ${ phone.type }<br/>
+                </td>
+            %endfor
+        %else:
+            <td>None</td>
+            <td>None</td>
+        %endif
+
         <td>${ person.email }</td>
     </tr>
     %endfor

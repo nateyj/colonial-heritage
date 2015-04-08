@@ -1,5 +1,5 @@
 <%inherit file="base_ajax.htm" />
 
 <%block name="content">
-<p class="server-time">The current server time is ${ now }.</p>
+<p class="server-time">The current server time is ${ now.strftime('%b %d, %Y %I:%M:%S %p') }.</p>
 </%block>

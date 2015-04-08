@@ -30,10 +30,6 @@ RENTAL_CART_KEY = 'rental_cart'
 def process_request(request):
     params = {}
 
-    form = DueDateForm(initial={
-        'discount': 0,
-    })
-
     # ensures agent has a retnal cart in the session even if they haven't added any rental products to the cart yet
     if RENTAL_CART_KEY not in request.session:
         request.session[RENTAL_CART_KEY] = []
@@ -51,26 +47,6 @@ def process_request(request):
             return HttpResponseRedirect('/homepage/index')
 
         params[RENTAL_CART_KEY].append(rental_product)
-
-    if request.method == 'POST':
-        form = DueDateForm(request.POST)  # redisplays page with posted information
-
-        if form.is_valid():
-            due_date = form.cleaned_data['date_due']
-            due_date = dumps(due_date, default=json_serial)
-            print(due_date)
-            request.session['date_due'] = due_date
-            request.session['discount'] = form.cleaned_data['discount']
-            request.session.modified = True
-
-            return HttpResponseRedirect('/homepage/rental_cart.enter_username')
-            # return HttpResponse('''
-            # <script>
-            #         window.location.href = "/homepage/rental_cart.enter_username/";
-            #     </script>
-            # ''')
-
-    params['form'] = form
 
     return templater.render_to_response(request, 'rental_cart.html', params)
 
@@ -114,20 +90,28 @@ def remove(request):
 def enter_username(request):
     params = {}
 
-    form = UsernameForm()
+    form = UsernameForm(initial={
+        'discount': 0,
+    })
 
     if request.method == 'POST':
         form = UsernameForm(request.POST)  # redisplays page with posted information
 
         if form.is_valid():
+            due_date = form.cleaned_data['date_due']
+            due_date = dumps(due_date, default=json_serial)
+
             request.session['username'] = form.cleaned_data['username']
+            request.session['date_due'] = due_date
+            request.session['discount'] = form.cleaned_data['discount']
             request.session.modified = True
 
-            return HttpResponse('''
-                <script>
-                    window.location.href = "/homepage/rental_checkout/";
-                </script>
-            ''')
+            return HttpResponseRedirect('/homepage/rental_checkout/')
+            # return HttpResponse('''
+            #     <script>
+            #         window.location.href = "/homepage/rental_checkout/";
+            #     </script>
+            # ''')
 
     params['form'] = form
 
@@ -135,18 +119,20 @@ def enter_username(request):
 
 
 class UsernameForm(forms.Form):
-    username = forms.CharField()
+    this_year = datetime.now().year
 
-    def clean_username(self):
+    username = forms.CharField()
+    date_due = forms.DateTimeField(label="Date Due", widget=forms.extras.widgets.SelectDateWidget(years=range(this_year, this_year + 2)))
+    discount = forms.IntegerField(max_value=100, min_value=0)
+
+    def clean(self):
         site_users_count = hmod.SiteUser.objects.filter(username=self.cleaned_data['username']).count()
+
         if site_users_count == 0:
             raise forms.ValidationError('This username is not associated with any accounts.')
 
-        return self.cleaned_data['username']
+        if self.cleaned_data['date_due'] <= datetime.now():
+            raise forms.ValidationError('Please enter a due date after today.')
 
+        return self.cleaned_data
 
-class DueDateForm(forms.Form):
-    this_year = datetime.now().year
-
-    date_due = forms.DateTimeField(widget=forms.extras.widgets.SelectDateWidget(years=range(this_year, this_year + 2)))
-    discount = forms.IntegerField(max_value=100, min_value=0)

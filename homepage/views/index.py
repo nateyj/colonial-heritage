@@ -8,7 +8,7 @@ from django.forms.extras import widgets
 from django.utils import timezone
 from django.core.mail import send_mail
 
-templater = get_renderer('catalog')
+templater = get_renderer('homepage')
 
 ###################################################################
 #####
@@ -16,4 +16,4 @@ templater = get_renderer('catalog')
 def process_request(request):
     params = {}
 
-    return HttpResponse('Success')
+    return templater.render_to_response(request, 'index.html', params)

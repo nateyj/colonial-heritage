@@ -14,3 +14,11 @@ header {
 .navbar-right {
     padding-right: 15px;
 }
+
+#buttons {
+    text-align: center;
+}
+
+.color {
+    width: 85px;
+}

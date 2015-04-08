@@ -26,10 +26,29 @@ $(function () {
         }); //loadmodal
     }); //click
 
-    //$('#sign_out').on('click', function() {
-    //
-    //    $.ajax({
-    //        url: '/homepage/login.logout_view'
-    //    });//ajax
-    //});//click
+    var blue_clicks = 0;
+    var green_clicks = 0;
+
+    $('.color').on('click', function() {
+        if ($(this).attr('id') == 'green') {
+            green_clicks += 1;
+
+            $('#green_clicks').html(green_clicks);
+        }
+        else {
+            blue_clicks += 1;
+
+            $('#blue_clicks').html(blue_clicks);
+        }
+
+        if (green_clicks > blue_clicks) {
+            $('#winner').html('<strong> Green machine</strong>  is in the lead!')
+        }
+        else if (blue_clicks > green_clicks) {
+            $('#winner').html('<strong>Blue goo</strong> does not want to lose!')
+        }
+        else {
+            $('#winner').html('<em>Please end the suspense and break the tie!</em>')
+        }
+    });//blue click
 }); //ready

@@ -9,16 +9,15 @@
 <meta charset="UTF-8">
 <head>
     <%block name="title">
-    <title>Colonial Heritage Foundation</title>
-</
-%block>
+        <title>Colonial Heritage Foundation</title>
+    </%block>
 
-<%block name="meta">
-<meta name="keywords" content="Colonial, festival, heritage, Utah, history, America">
-<meta name="author" content="Colonial Heritage Foundation">
-<meta name="description"
-      content="Colonial Heritage Foundation puts on the largest colonial festival west of the Mississippi. Volunteer, attend, shop, or rent colonial items at this week-long event. Fun family and friends.">
-</%block>
+    <%block name="meta">
+    <meta name="keywords" content="Colonial, festival, heritage, Utah, history, America">
+    <meta name="author" content="Colonial Heritage Foundation">
+    <meta name="description"
+          content="Colonial Heritage Foundation puts on the largest colonial festival west of the Mississippi. Volunteer, attend, shop, or rent colonial items at this week-long event. Fun family and friends.">
+    </%block>
 
 ## add any site-wide scripts or CSS here; for example, jquery:
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -65,8 +64,7 @@ ${ static_renderer.get_template_css(request, context)  }
                     <a href="/homepage/users">Users</a>
                     </li>
                     %endif
-                    %if request.user.is_authenticated() and (request.user.groups.all()[0].name == 'Manager' or
-                    request.user.groups.all()[0].name == 'Administrator'):
+                    %if request.user.is_authenticated() and (request.user.groups.all()[0].name == 'Manager' or request.user.groups.all()[0].name == 'Administrator'):
                     <li role="presentation" ${
                     'class="active"' if request.dmp_router_page == 'product' else '' }>
                     <a href="/homepage/product">Products</a>
@@ -86,17 +84,13 @@ ${ static_renderer.get_template_css(request, context)  }
                 </ul>
                 </li>
                 <li role="presentation" ${
-                'class="active"' if request.dmp_router_page == 'rental_items' else '' }>
-                <a href="/homepage/rental_items">Rental Items</a>
-                </li>
-                <li role="presentation" ${
                 'class="active"' if request.dmp_router_page == 'report' else '' }>
                 <a href="/homepage/report">Overdue Items Report</a>
                 </li>
                 %endif
                 <li role="presentation" ${
                 'class="active"' if request.dmp_router_page == 'rental_return' else '' }>
-                <a href="/homepage/rental_return/">Check In Rental Items</a>
+                <a href="/homepage/rental_return/">Rental Return</a>
                 </li>
                 <li role="presentation" ${
                 'class="active"' if request.dmp_router_page == 'rental_products' else '' }>
@@ -117,22 +111,20 @@ ${ static_renderer.get_template_css(request, context)  }
             </div>
         </nav>
     </div>
-</
-%block>
+</%block>
 </div>
 
 <div id="leftside" class="col-md-2">
-    <div id="buttons" style="text-align: center;">
-        <p style="text-align:center">Which color do you prefer?</p>
-        <button type="button" class="btn btn-primary btn-lg" style="width:75px;">Blue</button>
-        <button type="button" class="btn btn-success btn-lg">Green</button>
-    </div>
-    <!--buttons-->
-    <p style="margin-top:20px; text-align:center;">
-        <button type="button" class="btn btn-info btn-sm">
-            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Like
-        </button>
-    </p>
+    <div id="buttons">
+        <p>Which color do you prefer?</p>
+        <button id="blue" type="button" class="color btn btn-primary btn-lg">Blue</button>
+        <button id="green" type="button" class="color btn btn-success btn-lg">Green</button>
+        <p>
+            <br/>Likes = <b id="blue_clicks">0</b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            Likes = <b id="green_clicks">0</b><br/>
+        </p>
+        <p id="winner"></p>
+    </div><!--buttons-->
 </div>
 <!--leftside-->
 
@@ -156,8 +148,7 @@ ${ static_renderer.get_template_css(request, context)  }
     <!-- /.modal -->
     <%block name="content">
     Site content goes here in sub-templates.
-</
-%block>
+</%block>
 </div> <!-- center -->
 
 <div id="footer" class="container-fluid">
