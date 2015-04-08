@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1428527544.604062
+_modified_time = 1428529358.264701
 _enable_loop = True
 _template_filename = '/Users/Nate/chf_dmp/homepage/templates/product.html'
 _template_uri = 'product.html'
@@ -28,9 +28,9 @@ def render_body(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
+        products = context.get('products', UNDEFINED)
         def content():
             return render_content(context._locals(__M_locals))
-        products = context.get('products', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\n\n')
         if 'parent' not in context._data or not hasattr(context._data['parent'], 'content'):
@@ -45,11 +45,11 @@ def render_body(context,**pageargs):
 def render_content(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
+        products = context.get('products', UNDEFINED)
         def content():
             return render_content(context)
-        products = context.get('products', UNDEFINED)
         __M_writer = context.writer()
-        __M_writer('\n\n<div class="text-left">\n    <h1>Products</h1>\n</div>\n\n<div class="text-left" style="margin-bottom: 20px;">\n    <a href="/homepage/product.edit/new/" class="btn btn-warning">Add New Product</a>\n</div>\n\n<table id="product_table" class="table table-striped">\n    <tr>\n        <th>Actions</th>\n        <th>ID</th>\n        <th>Name</th>\n        <th>Description</th>\n        <th>Category</th>\n        <th>Price</th>\n        <!--<th>Producer</th>-->\n    </tr>\n')
+        __M_writer('\n\n<div class="text-left">\n    <h1 class="page-header">Products</h1>\n</div>\n\n<div class="text-left" style="margin-bottom: 20px;">\n    <a href="/homepage/product.edit/new/" class="btn btn-warning">Add New Product</a>\n</div>\n\n<table id="product_table" class="table table-striped">\n    <tr>\n        <th>Actions</th>\n        <th>ID</th>\n        <th>Name</th>\n        <th>Description</th>\n        <th>Category</th>\n        <th>Price</th>\n        <!--<th>Producer</th>-->\n    </tr>\n')
         for product in products:
             __M_writer('    <tr>\n        <td>\n            <a href="/homepage/product.edit/edit/')
             __M_writer(str( product.id ))
@@ -74,6 +74,6 @@ def render_content(context,**pageargs):
 
 """
 __M_BEGIN_METADATA
-{"line_map": {"64": 32, "65": 33, "66": 33, "67": 34, "68": 34, "69": 37, "75": 69, "27": 0, "35": 1, "45": 3, "52": 3, "53": 23, "54": 24, "55": 26, "56": 26, "57": 28, "58": 28, "59": 30, "60": 30, "61": 31, "62": 31, "63": 32}, "filename": "/Users/Nate/chf_dmp/homepage/templates/product.html", "source_encoding": "ascii", "uri": "product.html"}
+{"uri": "product.html", "filename": "/Users/Nate/chf_dmp/homepage/templates/product.html", "source_encoding": "ascii", "line_map": {"64": 32, "65": 33, "66": 33, "67": 34, "68": 34, "69": 37, "75": 69, "27": 0, "35": 1, "45": 3, "52": 3, "53": 23, "54": 24, "55": 26, "56": 26, "57": 28, "58": 28, "59": 30, "60": 30, "61": 31, "62": 31, "63": 32}}
 __M_END_METADATA
 """
