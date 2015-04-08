@@ -214,12 +214,22 @@ def create(request):
 @view_function
 # @permission_required('homepage.delete_legalentity', login_url='/homepage/login/')
 def delete(request):
+    org_id = request.urlparams[0]
     try:
-        organization = hmod.Organization.objects.get(id=request.urlparams[0])
+        organization = hmod.Organization.objects.get(id=org_id)
     except hmod.Organization.DoesNotExist:
         return HttpResponseRedirect('/homepage/organization/')
 
-    organization.address.delete()
+    address = organization.address
+
+    # list of organizations with the same address as the person being deleted excluding this person
+    org_list = hmod.Organization.objects.filter(address=address).exclude(id=org_id)
+    ven_list = hmod.Venue.objects.filter(address=address)
+    trans_list = hmod.Transaction.objects.filter(ships_to=address)
+
     organization.delete()
+
+    if org_list.count() == 0 and trans_list.count() == 0 and ven_list.count() == 0:
+        address.delete()
 
     return HttpResponseRedirect('/homepage/organization/')

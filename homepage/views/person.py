@@ -281,17 +281,28 @@ def create(request):
 @view_function
 # @permission_required('homepage.delete_person', login_url='/homepage/login/')
 def delete(request):
-    phone_id = request.urlparams[1]
+    # delete phone first, then organization, then address
 
-    if phone_id == '':
-        print("grabbed an empty phone ID")
+    phone_id = request.urlparams[1]
+    person_id = request.urlparams[0]
 
     try:
-        person = hmod.Person.objects.get(id=request.urlparams[0])
+        person = hmod.Person.objects.get(id=person_id)
     except hmod.Person.DoesNotExist:
         return HttpResponseRedirect('/homepage/person/')
 
-    person.address.delete()
+    # print("Found a person")
+    address = person.address
+    print(address)
+
+    # list of organizations with the same address as the person being deleted excluding this person
+    org_list = hmod.Organization.objects.filter(address=address).exclude(id=person_id)
+    ven_list = hmod.Venue.objects.filter(address=address)
+    trans_list = hmod.Transaction.objects.filter(ships_to=address)
+
+    # print(org_list)
+    # print(ven_list)
+    # print(trans_list)
 
     if phone_id != '':
         try:
@@ -304,6 +315,15 @@ def delete(request):
         for phone in person.org_phones.all():
             phone.delete()
 
+    # print("deleted the phone numbers of this person")
     person.delete()
+    # print("deleted this person!")
+
+    # organization, venue, transaction
+    if org_list.count() == 0 and trans_list.count() == 0 and ven_list.count() == 0:
+        address.delete()
+        print("Deleted the address associated with this person")
+    else:
+        print("address still tied to another organization, venue, or transaction")
 
     return HttpResponseRedirect('/homepage/person/')
