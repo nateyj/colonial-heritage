@@ -24,7 +24,11 @@
         %for product in products:
         <div class="item_container">
             <a href="/catalog/product.detail/${ product.id }">
-                <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ product.product_specification.photo.image }"/>
+                %if product.product_specification.photo is not None:
+                    <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ product.product_specification.photo.image }"/>
+                %else:
+                    No picture available
+                %endif
 
                 <div class="text-muted text-center">${ product.product_specification.name }</div>
             </a>

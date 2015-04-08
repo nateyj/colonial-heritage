@@ -13,7 +13,7 @@ $(function () {
     }); //click
 
     // search is case sensitive
-    $('#search').on('keypress', function () {
+    $('#search').on('change', function () {
 
         // grabs user's input search criteria
         var input = $('#search').val();

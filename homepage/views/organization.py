@@ -7,8 +7,6 @@ from django.contrib.auth.decorators import permission_required
 
 templater = get_renderer('homepage')
 
-
-
 #########################################################################
 ### Show list of organizations
 
