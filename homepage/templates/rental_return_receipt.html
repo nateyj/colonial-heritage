@@ -1,0 +1,75 @@
+<%inherit file="/homepage/templates/base_ajax.htm" />
+
+<%block name="content">
+<p style="font-weight: bold;">Hello ${ user.get_full_name() },</p>
+<p>Thank you for renting from us!</p>
+<p>You returned your items on <b>${ date_in.strftime('%b %d, %Y') }</b></p>
+%if fee_total != '0.00':
+    <table class="table table-striped">
+        <tr>
+            <th>Rental Product</th>
+            <th>Damage Description</th>
+            <th>Damage Fee</th>
+            <th>Late Fee</th>
+        </tr>
+        %for rental_item in rental_items:
+            <tr>
+                <td>${ rental_item }</td>
+                %if rental_items[rental_item][2] != '':
+                    <td>${ rental_items[rental_item][2] }</td>
+                %else:
+                    <td>N/A</td>
+                %endif
+                %if rental_items[rental_item][1] != '':
+                    <td>$${ rental_items[rental_item][1] }</td>
+                %else:
+                    <td>N/A</td>
+                %endif
+                %if rental_items[rental_item][0] != '':
+                    <td>$${ rental_items[rental_item][0] }</td>
+                %else:
+                    <td>N/A</td>
+                %endif
+            </tr>
+        %endfor
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr style="font-weight: bold;">
+            <td>${ trans_date_in_updated.get_rental_item_count() } item(s)</td>
+            <td>Subtotal</td>
+            <td>$${ damage_fee_total }</td>
+            <td>$${ late_fee_total }</td>
+        </tr>
+        <tr style="font-weight: bold;">
+            <td></td>
+            <td>Total</td>
+            <td></td>
+            <td>$${ fee_total }</td>
+        </tr>
+        <tr style="font-weight: bold;">
+            <td></td>
+            <td></td>
+            <td>Payment</td>
+            <td>$${ return_charge_resp['Amount'] } ${ return_charge_resp['Currency'] }</td>
+        </tr>
+    </table>
+%else:
+    <table class="table table-striped">
+        <tr>
+            <th>Rental Product</th>
+        </tr>
+        %for rental_item in rental_items:
+            <tr>
+                <td>${ rental_item }</td>
+            </tr>
+        %endfor
+        <tr style="font-weight: bold;">
+            <td>${ trans_date_in_updated.get_rental_item_count() } item(s)</td>
+        </tr>
+    </table>
+%endif
+</%block>

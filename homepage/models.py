@@ -250,6 +250,7 @@ class Transaction(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     pre_discount_total = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True)
+    # no_charge = models.BooleanField()
     # date_packed = models.DateTimeField(null=True)
     # date_paid = models.DateTimeField(null=True)
     # date_shipped = models.DateTimeField(null=True)

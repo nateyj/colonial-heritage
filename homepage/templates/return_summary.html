@@ -17,9 +17,21 @@
                 <img src="${ STATIC_URL }catalog/media/images/product_pictures/${ rental_item.rental_product.product_specification.photo.image }"/>
             </div>
         </td>
-        <td>${ rental_items[rental_item][0] }</td>
-        <td>${ rental_items[rental_item][1] }</td>
-        <td>${ rental_items[rental_item][2] }</td>
+        %if rental_items[rental_item][0] != '':
+            <td>$${ rental_items[rental_item][0] }</td>
+        %else:
+            <td>N/A</td>
+        %endif
+        %if rental_items[rental_item][1] != '':
+            <td>$${ rental_items[rental_item][1] }</td>
+        %else:
+            <td>N/A</td>
+        %endif
+        %if rental_items[rental_item][2] != '':
+            <td>${ rental_items[rental_item][2] }</td>
+        %else:
+            <td>N/A</td>
+        %endif
     </tr>
     %endfor
     <tr class="total">

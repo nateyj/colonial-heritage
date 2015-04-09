@@ -9,11 +9,15 @@ from decimal import Decimal
 from django.template.defaultfilters import floatformat
 from homepage.customform import CustomForm
 import requests
+from django.core.mail import send_mail
 
 templater = get_renderer('homepage')
 
 RENTAL_RETURN_ITEMS_KEY = 'rental_return_items'
 DAMAGE_KEY = 'damage'
+FEE_TOTAL_KEY = 'fee_total'
+RENTAL_USERNAME_KEY = 'rental_username'
+RETURN_CHARGE_RESP_KEY = 'return_charge_resp'
 LATE_FEE_MULTIPLIER = 1.5
 
 
@@ -22,6 +26,26 @@ LATE_FEE_MULTIPLIER = 1.5
 @view_function
 def process_request(request):
     params = {}
+
+    if RENTAL_USERNAME_KEY in request.session:
+        del request.session[RENTAL_USERNAME_KEY]
+
+    if DAMAGE_KEY in request.session:
+        del request.session[DAMAGE_KEY]
+
+    if RENTAL_RETURN_ITEMS_KEY in request.session:
+        del request.session[RENTAL_RETURN_ITEMS_KEY]
+
+    if FEE_TOTAL_KEY in request.session:
+        del request.session[FEE_TOTAL_KEY]
+
+    if 'late_fee_total' in request.session:
+        del request.session['late_fee_total']
+
+    if 'damage_fee_total' in request.session:
+        del request.session['damage_fee_total']
+
+    request.session.modified = True
 
     form = UsernameForm()
 
@@ -91,7 +115,7 @@ def rental_items(request):
         request.session[RENTAL_RETURN_ITEMS_KEY] = []
     # get the customer and all of their unreturned rental items
     try:
-        customer = hmod.SiteUser.objects.get(username=request.session['rental_username'])
+        customer = hmod.SiteUser.objects.get(username=request.session[RENTAL_USERNAME_KEY])
     except hmod.SiteUser.DoesNotExist:
         return HttpResponseRedirect('/homepage/rental_return')
 
@@ -108,6 +132,7 @@ def rental_items(request):
                 trans_dict[rental_item_trans] = hmod.RentalItem.objects.filter(transaction=rental_item_trans)
 
     request.session.modified = True
+
     params['customer'] = customer
     params['rental_items'] = trans_dict
 
@@ -121,7 +146,7 @@ def summary(request):
     today = datetime.now()
 
     try:
-        customer = hmod.SiteUser.objects.get(username=request.session['rental_username'])
+        customer = hmod.SiteUser.objects.get(username=request.session[RENTAL_USERNAME_KEY])
     except hmod.SiteUser.DoesNotExist:
         return HttpResponseRedirect('/homepage/rental_return')
 
@@ -151,8 +176,10 @@ def summary(request):
         rental_item_dict[rental_item].append(request.session[DAMAGE_KEY][rental_item_id][2])
 
     fee_total_decimal = late_fee_total_decimal + damage_fee_total_decimal
-    request.session['fee_total'] = floatformat(fee_total_decimal, 2)
-    # request.session['damage_fee_total'] = damage_fee_total_decimal
+
+    request.session['late_fee_total'] = floatformat(late_fee_total_decimal, 2)
+    request.session['damage_fee_total'] = floatformat(damage_fee_total_decimal, 2)
+    request.session[FEE_TOTAL_KEY] = floatformat(fee_total_decimal, 2)
     request.session.modified = True
 
     form = BillingForm(request, initial={
@@ -176,7 +203,7 @@ def summary(request):
 
             if fee_total_decimal != 0:
                 t = hmod.Transaction()
-                t.credit_card_charge_ID = request.session['return_charge_resp']['ID']
+                t.credit_card_charge_ID = request.session[RETURN_CHARGE_RESP_KEY]['ID']
                 t.customer = customer
                 t.handled_by = emp
                 t.save()
@@ -201,15 +228,106 @@ def summary(request):
                 rental_item.date_in = today
                 rental_item.save()
 
-            return HttpResponseRedirect('/homepage/rental_return.thank_you')
+            return HttpResponseRedirect('/homepage/rental_return.receipt')
 
     params['form'] = form
     params['rental_items'] = rental_item_dict
-    params['late_fee_total'] = floatformat(late_fee_total_decimal, 2)
-    params['damage_fee_total'] = floatformat(damage_fee_total_decimal, 2)
+    params['late_fee_total'] = request.session['late_fee_total']
+    params['damage_fee_total'] = request.session['damage_fee_total']
     params['customer'] = customer
 
     return templater.render_to_response(request, 'return_summary.html', params)
+
+###################################################################
+#####
+@view_function
+def receipt(request):
+    email_params = {}
+    username = request.session[RENTAL_USERNAME_KEY]
+    fee_total_str = request.session[FEE_TOTAL_KEY]
+
+    # list for the rental items of the transaction where they were rented out
+    email_params['rental_items'] = {}
+
+    # if fee_total_str != '0.00':
+    #     email_params[RETURN_CHARGE_RESP_KEY] = request.session[RETURN_CHARGE_RESP_KEY]
+    #
+    #     try:
+    #         # gets the transaction that contains all of the fees associated with being late or damaged
+    #         fee_trans = hmod.Transaction.objects.get(credit_card_charge_ID=request.session[RETURN_CHARGE_RESP_KEY]['ID'])
+    #     except hmod.Transaction.DoesNotExist:
+    #         return HttpResponseRedirect('/homepage/index/')
+    #
+    #     email_params['fee_trans'] = fee_trans
+    #
+    # else:
+    #     print("fee total is 0.00")
+    #     email_params['fee_trans'] = ''
+
+    try:
+        user = hmod.SiteUser.objects.get(username=username)
+    except hmod.SiteUser.DoesNotExist:
+        return HttpResponseRedirect('/homepage/index/')
+
+    email_params['user'] = user
+
+    for rental_item_id in request.session[DAMAGE_KEY]:
+        try:
+            rental_item = hmod.RentalItem.objects.get(id=rental_item_id)
+        except hmod.RentalItem.DoesNotExist:
+            return HttpResponseRedirect('/homepage/index/')
+
+        # this is the transaction that has the rental items where the date in was updated
+        trans_date_in_updated = rental_item.transaction
+
+        email_params['rental_items'][rental_item] = [request.session[DAMAGE_KEY][rental_item_id][0],
+                                                     request.session[DAMAGE_KEY][rental_item_id][1],
+                                                     request.session[DAMAGE_KEY][rental_item_id][2]]
+        email_params['date_in'] = rental_item.date_in
+
+
+    email_params['trans_date_in_updated'] = trans_date_in_updated
+    email_params['late_fee_total'] = request.session['late_fee_total']
+    email_params['damage_fee_total'] = request.session['damage_fee_total']
+    email_params['fee_total'] = request.session[FEE_TOTAL_KEY]
+
+    # email params includes:
+    #   return_charge_resp
+    #   user
+    #   date_in
+    #   rental_items
+    #   trans_date_in_updated
+    #   late_fees
+    #   damage_fees
+    #   late_fee_total
+    #   damage_fee_total
+    #   fee_total
+
+    # return templater.render_to_response(request, 'rental_return_receipt.html', email_params)
+    email_body = templater.render(request, 'rental_return_receipt.html', email_params)
+
+    subject = 'Colonial Heritage Foundation Rental Return Receipt'
+    from_email = 'isgroup2.9@gmail.com'
+    recipient_list = ['nate8etan@gmail.com']
+
+
+    send_mail(subject, email_body, from_email, recipient_list, html_message=email_body, fail_silently=False)
+
+    # delete the rental cart session for the agent so they can continue shopping with an empty cart
+    # only delete after cart has been used to create transaction
+    del request.session[RENTAL_USERNAME_KEY]
+    del request.session[DAMAGE_KEY]
+    del request.session[RENTAL_RETURN_ITEMS_KEY]
+    del request.session[FEE_TOTAL_KEY]
+    del request.session['late_fee_total']
+    del request.session['damage_fee_total']
+
+    if fee_total_str != '0.00':
+        del request.session[RETURN_CHARGE_RESP_KEY]
+
+    request.session.modified = True
+
+    return HttpResponseRedirect('/homepage/rental_return.thank_you/{}'.format(username))
 
 
 @view_function
@@ -217,14 +335,11 @@ def thank_you(request):
     params = {}
 
     try:
-        user = hmod.SiteUser.objects.get(username=request.session['rental_username'])
+        user = hmod.SiteUser.objects.get(username=request.urlparams[0])
     except hmod.SiteUser.DoesNotExist:
         return HttpResponseRedirect('/homepage/index/')
 
     params['user'] = user
-
-    del request.session['rental_username']
-    request.session.modified = True
 
     return templater.render_to_response(request, 'thank_you.html', params)
 
@@ -301,14 +416,14 @@ class BillingForm(CustomForm):
         API_KEY = 'f65399c84d45a5039735fb33fb05d3c9'
 
         if self.is_valid():
-            if self.request.session['fee_total'] != 0:
+            if self.request.session[FEE_TOTAL_KEY] != '0.00':
                 exp_year = str(self.cleaned_data['exp_year'])
                 exp_year = exp_year[-2:]  # gets the last two characters of the string starting from the end
 
                 r = requests.post(API_URL, data={
                     'apiKey': API_KEY,  # API key is needed for all REST requests to our endpoint
                     'currency': 'usd',  #Currency must be US dollars
-                    'amount': self.request.session['fee_total'],  #Amount to the exact penny
+                    'amount': self.request.session[FEE_TOTAL_KEY],  #Amount to the exact penny
                     'type': self.cleaned_data['card_type'],  #Credit card type (Visa, MasterCard, AmEx, etc.)
                     'number': self.cleaned_data['credit_card_no'],
                     #Credit card number (should have already passed Luhn test)
@@ -327,6 +442,8 @@ class BillingForm(CustomForm):
                     raise forms.ValidationError("ERROR: " + resp['error'])
                 else:
                     # print(resp.keys())
-                    self.request.session['return_charge_resp'] = resp
+                    self.request.session[RETURN_CHARGE_RESP_KEY] = resp
+            # else:
+            #     print('Fee total is 0.00')
 
         return self.cleaned_data

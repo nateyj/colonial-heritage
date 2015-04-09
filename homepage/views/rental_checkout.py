@@ -161,7 +161,7 @@ def receipt(request):
     email_body = templater.render(request, 'rental_receipt.html', email_params)
 
     subject = 'Colonial Heritage Foundation Rental Receipt'
-    from_email = 'nate8etan@gmail.com'
+    from_email = 'isgroup2.9@gmail.com'
     recipient_list = ['nate8etan@gmail.com']
 
     send_mail(subject, email_body, from_email, recipient_list, html_message=email_body, fail_silently=False)
