@@ -42,20 +42,6 @@ def edit(request):
         except hmod.SiteUser.DoesNotExist:
             return HttpResponseRedirect('/account/account/')
 
-    # if the account.edit is being called because the user is creating their own account, enable them to set their password on this
-    # form. If they're editing their account, account.edit will allow them to edit everything except their password. They must go
-    #   to the "Change Password" button to change their password
-    # if second_url_param == 'new':
-    #     form = SiteUserCreateForm(request, initial={
-    #         'first_name': site_user.first_name,
-    #         'last_name': site_user.last_name,
-    #         'username': site_user.username,
-    #         'password': site_user.password,
-    #         'security_question': site_user.security_question,
-    #         'security_answer': site_user.security_answer,
-    #         'email': site_user.email,
-    #     })
-    # else:
         form = SiteUserEditForm(request, initial={
             'first_name': site_user.first_name,
             'last_name': site_user.last_name,
@@ -225,7 +211,7 @@ def check_username(request):
 
     # check to see if username is already in database
     # Takes care of the case where I set my own username to the same username
-    if site_user_id != 'undefined':
+    if site_user_id != '':
         site_users_count = hmod.SiteUser.objects.filter(username=username).exclude(id=site_user_id).count()
     else:
         site_users_count = hmod.SiteUser.objects.filter(username=username).count()

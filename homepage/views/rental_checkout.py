@@ -194,11 +194,15 @@ def process_request(request):
     #########################################################################
     ##### Calculate transaction total based on info in the rental cart and store that total in the session
     today = datetime.now()
+    print("Today: {}".format(today))
+    print("Today's Day: {}".format(today.day))
     due_date_datetime = datetime.strptime(request.session['date_due'], '"%Y-%m-%dT%H:%M:%S"')
     # if isinstance(due_date, datetime):
     # print("due_date is a datetime.")
     # else:
     #     print("due_date is NOT a datetime.")
+    print("Due Date: {}".format(due_date_datetime))
+    print("Due Date's Day: {}".format(due_date_datetime.day))
 
     discount_int = request.session['discount']
     # if isinstance(discount, int):
@@ -207,7 +211,12 @@ def process_request(request):
     #     print("discount is NOT an int.")
 
     rental_days_timedelta = due_date_datetime - today
-    rental_days_int = rental_days_timedelta.days + 2
+    rental_days_int = due_date_datetime.day - today.day
+    # print("Rental Days in rental_checkout: {}".format(rental_days_timedelta.days))
+    print("Rental Days in rental_checkout: {}".format(rental_days_int))
+    # rental_days_int = rental_days_timedelta.days + 2
+
+
     # if isinstance(rental_days_timedelta.days, int):
     #     print("rental_days_timedelta.days is an int.")
     # else:

@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1428631550.488896
+_modified_time = 1428633839.459732
 _enable_loop = True
 _template_filename = '/Users/Nate/chf_dmp/account/templates/account.edit.html'
 _template_uri = 'account.edit.html'
@@ -28,9 +28,9 @@ def render_body(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
+        form = context.get('form', UNDEFINED)
         def content():
             return render_content(context._locals(__M_locals))
-        form = context.get('form', UNDEFINED)
         request = context.get('request', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\n\n')
@@ -46,16 +46,16 @@ def render_body(context,**pageargs):
 def render_content(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
+        form = context.get('form', UNDEFINED)
         def content():
             return render_content(context)
-        form = context.get('form', UNDEFINED)
         request = context.get('request', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\n\n<form method="POST">\n    <table>\n        ')
         __M_writer(str( form ))
         __M_writer('\n    </table>\n\n')
         if request.urlparams[0] == 'new':
-            __M_writer('        <button class="submit_btn btn btn-primary" type="submit">Create</button>\n')
+            __M_writer('        <button data-site_user_id="" class="submit_btn btn btn-primary" type="submit">Create</button>\n')
         else:
             __M_writer('        <button data-site_user_id="')
             __M_writer(str( request.urlparams[1] ))
@@ -68,6 +68,6 @@ def render_content(context,**pageargs):
 
 """
 __M_BEGIN_METADATA
-{"filename": "/Users/Nate/chf_dmp/account/templates/account.edit.html", "line_map": {"27": 0, "36": 1, "69": 63, "46": 3, "54": 3, "55": 7, "56": 7, "57": 10, "58": 11, "59": 12, "60": 13, "61": 13, "62": 13, "63": 15}, "source_encoding": "ascii", "uri": "account.edit.html"}
+{"source_encoding": "ascii", "line_map": {"27": 0, "36": 1, "69": 63, "46": 3, "54": 3, "55": 7, "56": 7, "57": 10, "58": 11, "59": 12, "60": 13, "61": 13, "62": 13, "63": 15}, "filename": "/Users/Nate/chf_dmp/account/templates/account.edit.html", "uri": "account.edit.html"}
 __M_END_METADATA
 """

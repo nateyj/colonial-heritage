@@ -86,14 +86,14 @@ def update_session(request):
         request.session[DAMAGE_KEY] = {}
 
     if today > rental_item.date_due:
-        days_overdue_timedelta = today - rental_item.date_due
+        days_overdue_int = today.day - rental_item.date_due.day
         # float cannot be multiplied by Decimals
         late_fee_price_per_day_decimal = Decimal(LATE_FEE_MULTIPLIER) * rental_item.rental_product.price_per_day
         # converting late_fee_price_per_day_decimal to a SafeText str so that it will only have two decimals
         late_fee_price_per_day_str = floatformat(late_fee_price_per_day_decimal, 2)
 
         # convert late_fee_price_per_day_str back to a Decimal for calculations
-        late_fee_amount_decimal = days_overdue_timedelta.days * Decimal(late_fee_price_per_day_str)
+        late_fee_amount_decimal = days_overdue_int * Decimal(late_fee_price_per_day_str)
         late_fee_amount_decimal_str = floatformat(late_fee_amount_decimal, 2)
     else:
         late_fee_amount_decimal_str = '0.00'

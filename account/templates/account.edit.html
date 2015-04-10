@@ -8,7 +8,7 @@
     </table>
 
     %if request.urlparams[0] == 'new':
-        <button class="submit_btn btn btn-primary" type="submit">Create</button>
+        <button data-site_user_id="" class="submit_btn btn btn-primary" type="submit">Create</button>
     %else:
         <button data-site_user_id="${ request.urlparams[1] }" class="submit_btn btn btn-primary" type="submit">Save</button>
     %endif

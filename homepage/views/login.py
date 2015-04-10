@@ -55,15 +55,18 @@ class LoginForm(forms.Form):
                     if user == None:
                         raise forms.ValidationError("The username or password you entered was incorrect.")
             except:
+                print("The user is not in Active directory")
                 try:
                     user = authenticate(username=username, password=password)
-
+                    print("Authentication has happened, will the user object be None?")
                     if user == None:
                         raise forms.ValidationError("The username or password you entered was incorrect.")
+                    else:
+                        print("User object is not none and signing in should be happening now.")
                 except:
                     raise forms.ValidationError("The username or password you entered was incorrect.")
 
-                # raise forms.ValidationError("You are not in our Active Directory.")
+            print("Now out of the try-except")
 
 
         return self.cleaned_data
@@ -110,6 +113,7 @@ def loginform(request):
         form = LoginForm(request.POST)  # redisplays page with posted information
 
         if form.is_valid():
+            print("form is valid")
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             # active directory is the master and our account on our system is mimicking that
@@ -138,7 +142,9 @@ def loginform(request):
             # u.save()
 
             user = authenticate(username=username, password=password)
+            print("User authenticated")
             login(request, user)
+            print("User logged in")
 
             return HttpResponse('''
                 <script>
