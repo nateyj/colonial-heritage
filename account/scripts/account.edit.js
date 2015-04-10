@@ -19,6 +19,9 @@ $(function () {
                 if (resp == 'No') {
                     $('#id_username').after('<span id="id_username_message" style="color: red;">Username not available</span>');
                 }
+                else {
+                    $('#id_username').after('<span id="id_username_message" style="color: green;">Username available!</span>');
+                }
             }//success
         });//ajax
     });//change

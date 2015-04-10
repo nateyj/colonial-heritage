@@ -32,28 +32,30 @@ def process_request(request):
 @view_function
 def edit(request):
     params = {}
-    try:
-        site_user = hmod.SiteUser.objects.get(id=request.urlparams[0])
-    except hmod.SiteUser.DoesNotExist:
-        return HttpResponseRedirect('/account/account/')
+    first_urlparam = request.urlparams[0]
 
-    # this variable stores second URL param if it exists, which would be the string "new"
-    second_url_param = request.urlparams[1]
+    if first_urlparam == 'new':
+        form = SiteUserCreateForm(request)
+    else:
+        try:
+            site_user = hmod.SiteUser.objects.get(id=request.urlparams[1])
+        except hmod.SiteUser.DoesNotExist:
+            return HttpResponseRedirect('/account/account/')
 
     # if the account.edit is being called because the user is creating their own account, enable them to set their password on this
     # form. If they're editing their account, account.edit will allow them to edit everything except their password. They must go
     #   to the "Change Password" button to change their password
-    if second_url_param == 'new':
-        form = SiteUserCreateForm(request, initial={
-            'first_name': site_user.first_name,
-            'last_name': site_user.last_name,
-            'username': site_user.username,
-            'password': site_user.password,
-            'security_question': site_user.security_question,
-            'security_answer': site_user.security_answer,
-            'email': site_user.email,
-        })
-    else:
+    # if second_url_param == 'new':
+    #     form = SiteUserCreateForm(request, initial={
+    #         'first_name': site_user.first_name,
+    #         'last_name': site_user.last_name,
+    #         'username': site_user.username,
+    #         'password': site_user.password,
+    #         'security_question': site_user.security_question,
+    #         'security_answer': site_user.security_answer,
+    #         'email': site_user.email,
+    #     })
+    # else:
         form = SiteUserEditForm(request, initial={
             'first_name': site_user.first_name,
             'last_name': site_user.last_name,
@@ -65,28 +67,46 @@ def edit(request):
 
     if request.method == 'POST':
         # if they're creating their new account, we want the form with the password fields
-        if second_url_param == 'new':
+        if first_urlparam == 'new':
             form = SiteUserCreateForm(request, request.POST)  # POST is a dictionary of all the data sent with the form
         else:
             form = SiteUserEditForm(request, request.POST)
 
         if form.is_valid():
-            site_user.first_name = form.cleaned_data['first_name']
-            site_user.last_name = form.cleaned_data['last_name']
-            site_user.username = form.cleaned_data['username']
-            site_user.security_question = form.cleaned_data['security_question']
-            site_user.security_answer = form.cleaned_data['security_answer']
-            site_user.email = form.cleaned_data['email']
-            site_user.save()
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            username = form.cleaned_data['username']
+            security_question = form.cleaned_data['security_question']
+            security_answer = form.cleaned_data['security_answer']
+            email = form.cleaned_data['email']
 
-            # form will only set the new user's password if they're creating their account for the first time
-            if second_url_param == 'new':
+            if first_urlparam == 'new':
+                site_user = hmod.SiteUser()
+                site_user.first_name = first_name
+                site_user.last_name = last_name
+                site_user.username = username
                 site_user.set_password(form.cleaned_data['password'])
+                site_user.security_question = security_question
+                site_user.security_answer = security_answer
+                site_user.email = email
                 site_user.save()
 
                 # after user creates an account, this will log them in upon creation
                 user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
                 login(request, user)
+            else:
+                try:
+                    site_user = hmod.SiteUser.objects.get(id=request.urlparams[1])
+                except hmod.SiteUser.DoesNotExist:
+                    return HttpResponseRedirect('/account/account/')
+
+                site_user.first_name = first_name
+                site_user.last_name = last_name
+                site_user.username = username
+                site_user.security_question = security_question
+                site_user.security_answer = security_answer
+                site_user.email = email
+                site_user.save()
 
             return HttpResponseRedirect('/account/account/')
 
@@ -119,23 +139,17 @@ class SiteUserCreateForm(CustomForm):
     email = forms.EmailField(max_length=50)
 
     def clean(self):
-        site_user_id = self.request.urlparams[0]
-        second_url_param = self.request.urlparams[1]
-
         if self.is_valid():
-
             # checks to see if there are any other users with the username they typed in, excluding themselves if they want
             # to keep their same username
-            site_users_count = hmod.SiteUser.objects.filter(username=self.cleaned_data['username']).exclude(
-                id=site_user_id).count()
+            site_users_count = hmod.SiteUser.objects.filter(username=self.cleaned_data['username']).count()
 
             if site_users_count >= 1:
                 raise forms.ValidationError('Did you not read the red text? This username is already being used...')
 
-            if second_url_param == 'new':
-                # checks to see if the passwords they entered equal each other
-                if self.cleaned_data['password'] != self.cleaned_data['retype_password']:
-                    raise forms.ValidationError('The passwords you entered do not match.')
+            # checks to see if the passwords they entered equal each other
+            if self.cleaned_data['password'] != self.cleaned_data['retype_password']:
+                raise forms.ValidationError('The passwords you entered do not match.')
 
         return self.cleaned_data
 
@@ -162,7 +176,7 @@ class SiteUserEditForm(CustomForm):
     email = forms.EmailField(max_length=50)
 
     def clean_username(self):
-        site_user_id = self.request.urlparams[0]
+        site_user_id = self.request.urlparams[1]
 
         # checks to see if there are any other users with the username they typed in, excluding themselves if they want
         # to keep their same username
@@ -211,7 +225,10 @@ def check_username(request):
 
     # check to see if username is already in database
     # Takes care of the case where I set my own username to the same username
-    site_users_count = hmod.SiteUser.objects.filter(username=username).exclude(id=site_user_id).count()
+    if site_user_id != 'undefined':
+        site_users_count = hmod.SiteUser.objects.filter(username=username).exclude(id=site_user_id).count()
+    else:
+        site_users_count = hmod.SiteUser.objects.filter(username=username).count()
 
     if site_users_count >= 1:
         return HttpResponse('No')  # returns 'No' if username isn't available

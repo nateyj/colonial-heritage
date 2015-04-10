@@ -7,14 +7,13 @@
         ${ form }
     </table>
 
-    %if request.urlparams[1] == 'new':
-    <button data-site_user_id="${ request.urlparams[0] }" class="submit_btn btn btn-primary" type="submit">Create
-    </button>
-    <a class="btn btn-primary" href="/account/account.delete/${ request.urlparams[0] }/">Cancel</a>
+    %if request.urlparams[0] == 'new':
+        <button class="submit_btn btn btn-primary" type="submit">Create</button>
     %else:
-    <button data-site_user_id="${ request.urlparams[0] }" class="submit_btn btn btn-primary" type="submit">Save</button>
-    <a class="btn btn-primary" href="/account/account/">Cancel</a>
+        <button data-site_user_id="${ request.urlparams[1] }" class="submit_btn btn btn-primary" type="submit">Save</button>
     %endif
+
+    <a class="btn btn-primary" href="/account/account/">Cancel</a>
 </form>
 
 </%block>

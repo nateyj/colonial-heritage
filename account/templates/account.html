@@ -10,7 +10,7 @@
     <h1>My Account</h1>
 </div>
 <div>
-    <a class="btn btn-primary" href="/account/account.edit/${ user.id }/">Edit</a>
+    <a class="btn btn-primary" href="/account/account.edit/edit/${ user.id }/">Edit</a>
     <a class="btn btn-primary" href="/account/password.edit/${ user.id }/">Change Password</a>
 </div>
 <table id="users_table" class="table table-striped">
@@ -41,7 +41,7 @@
         <td>Email</td>
         <td>${ user.email }</td>
     </tr>
-    <tr>
+    <!--<tr>
         <td>Phone</td>
         <% user_phones = user.user_phones.all() %>
         %if user_phones != []:
@@ -54,7 +54,7 @@
         %else:
         <td>None</td>
         %endif
-    </tr>
+    </tr>-->
 </table>
 
 
