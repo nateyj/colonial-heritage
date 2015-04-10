@@ -430,9 +430,12 @@ class RentalItem(TransactionLineItem):
 
     def calc_amount(self):
         rental_days_timedelta = self.date_due - self.date_out
+        print("Rental Days: {}".format(rental_days_timedelta.days + 2))
         # an int multiplied by a Decimal results in a Decimal
         # self.rental_product.price_per_day is a float
-        self.pre_discount_amount = Decimal(self.rental_product.price_per_day) * rental_days_timedelta.days
+        # for some reason you have to add two to a timedelta to get the create number of days in between dates
+        self.pre_discount_amount = Decimal(self.rental_product.price_per_day) * (rental_days_timedelta.days + 2)
+        print("Pre-Discount Amount: {}".format(self.pre_discount_amount))
         # if isinstance(self.rental_product.price_per_day, float):
         #     print("self.rental_product.price_per_day is a Decimal.")
         # else:
@@ -445,8 +448,9 @@ class RentalItem(TransactionLineItem):
 
         # self.discount_percent is an int
         if self.discount_percent is not None:
-            discount_float = 1 - (self.discount_percent / 100)
+            discount_float = 1 - (int(self.discount_percent) / 100)
             self.amount = self.pre_discount_amount * Decimal(discount_float)
+            print("Transaction Amount: {}".format(self.amount))
         else:
             self.amount = self.pre_discount_amount
 
@@ -472,7 +476,12 @@ class LateFee(Fee):
     def calc_amount(self):
         today = datetime.now()
         days_late_timedelta = today - self.rental_item.date_due
-        self.days_late = days_late_timedelta.days
+
+        if days_late_timedelta.days > 0:
+            self.days_late = days_late_timedelta.days
+        else:
+            self.days_late = 0
+
         self.amount = self.days_late * (
             Decimal(LATE_FEE_MULTIPLIER) * Decimal(self.rental_item.rental_product.price_per_day))
 

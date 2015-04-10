@@ -54,7 +54,7 @@
             <td></td>
             <td></td>
             <td>Payment</td>
-            <td>$${ return_charge_resp['Amount'] } ${ return_charge_resp['Currency'] }</td>
+            <td>$${ request.session['return_charge_resp']['Amount'] } ${ request.session['return_charge_resp']['Currency'] }</td>
         </tr>
     </table>
 %else:

@@ -85,7 +85,7 @@ def update_session(request):
     if DAMAGE_KEY not in request.session:
         request.session[DAMAGE_KEY] = {}
 
-    if today >= rental_item.date_due:
+    if today > rental_item.date_due:
         days_overdue_timedelta = today - rental_item.date_due
         # float cannot be multiplied by Decimals
         late_fee_price_per_day_decimal = Decimal(LATE_FEE_MULTIPLIER) * rental_item.rental_product.price_per_day
@@ -96,7 +96,8 @@ def update_session(request):
         late_fee_amount_decimal = days_overdue_timedelta.days * Decimal(late_fee_price_per_day_str)
         late_fee_amount_decimal_str = floatformat(late_fee_amount_decimal, 2)
     else:
-        late_fee_amount_decimal_str = '0'
+        late_fee_amount_decimal_str = '0.00'
+        print('Late fee is 0.00')
 
     request.session[DAMAGE_KEY][rental_item_id_int] = [late_fee_amount_decimal_str, damage_fee_str, damage_desc]
     # print("Rental Item ID: %s" % request.session[DAMAGE_KEY])
@@ -163,9 +164,11 @@ def summary(request):
         rental_item_dict[rental_item] = []
 
         late_fee_str = request.session[DAMAGE_KEY][rental_item_id][0]
+        print('In rental_return.summary, late_fee_str is %s' % late_fee_str)
         damage_fee_str = request.session[DAMAGE_KEY][rental_item_id][1]
+        print('In rental_return.summary, damage_fee_str is %s' % damage_fee_str)
 
-        if late_fee_str != '':
+        if late_fee_str != '0.00':
             late_fee_total_decimal += Decimal(late_fee_str)
 
         if damage_fee_str != '':
@@ -202,6 +205,7 @@ def summary(request):
                 return HttpResponseRedirect('/homepage/index/')
 
             if fee_total_decimal != 0:
+                print("Fee total >= 0")
                 t = hmod.Transaction()
                 t.credit_card_charge_ID = request.session[RETURN_CHARGE_RESP_KEY]['ID']
                 t.customer = customer
@@ -209,7 +213,8 @@ def summary(request):
                 t.save()
 
                 for rental_item in rental_item_dict:
-                    if rental_item_dict[rental_item][0] != '':
+                    if rental_item_dict[rental_item][0] != '0.00':
+                        print("There is a late fee line item about to be created")
                         late_fee = hmod.LateFee()
                         late_fee.transaction = t
                         late_fee.rental_item = rental_item
@@ -217,6 +222,7 @@ def summary(request):
                         late_fee.save()
 
                     if rental_item_dict[rental_item][1] != '':
+                        print("There is a damage fee")
                         damage_fee = hmod.DamageFee()
                         damage_fee.amount = Decimal(rental_item_dict[rental_item][1])
                         damage_fee.transaction = t
@@ -324,6 +330,7 @@ def receipt(request):
 
     if fee_total_str != '0.00':
         del request.session[RETURN_CHARGE_RESP_KEY]
+        print("RETURN_CHARGE_RESP_KEY was deleted from the session")
 
     request.session.modified = True
 
@@ -443,7 +450,7 @@ class BillingForm(CustomForm):
                 else:
                     # print(resp.keys())
                     self.request.session[RETURN_CHARGE_RESP_KEY] = resp
-            # else:
-            #     print('Fee total is 0.00')
+            else:
+                print('Fee total is 0.00')
 
         return self.cleaned_data

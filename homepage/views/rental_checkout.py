@@ -207,7 +207,7 @@ def process_request(request):
     #     print("discount is NOT an int.")
 
     rental_days_timedelta = due_date_datetime - today
-    rental_days_int = rental_days_timedelta.days + 1
+    rental_days_int = rental_days_timedelta.days + 2
     # if isinstance(rental_days_timedelta.days, int):
     #     print("rental_days_timedelta.days is an int.")
     # else:

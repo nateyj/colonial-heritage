@@ -4,13 +4,13 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1428463933.810772
+_modified_time = 1428626784.657494
 _enable_loop = True
 _template_filename = '/Users/Nate/chf_dmp/homepage/templates/base.htm'
 _template_uri = 'base.htm'
 _source_encoding = 'ascii'
 import os, os.path, re
-_exports = ['nav', 'meta', 'content', 'title']
+_exports = ['meta', 'title', 'content', 'nav']
 
 
 from django_mako_plus.controller import static_files 
@@ -19,17 +19,17 @@ def render_body(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
-        STATIC_URL = context.get('STATIC_URL', UNDEFINED)
-        def meta():
-            return render_meta(context._locals(__M_locals))
-        def nav():
-            return render_nav(context._locals(__M_locals))
-        request = context.get('request', UNDEFINED)
         def title():
             return render_title(context._locals(__M_locals))
-        self = context.get('self', UNDEFINED)
+        request = context.get('request', UNDEFINED)
         def content():
             return render_content(context._locals(__M_locals))
+        def meta():
+            return render_meta(context._locals(__M_locals))
+        self = context.get('self', UNDEFINED)
+        def nav():
+            return render_nav(context._locals(__M_locals))
+        STATIC_URL = context.get('STATIC_URL', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\n')
         __M_writer('\n')
@@ -61,63 +61,14 @@ def render_body(context,**pageargs):
             context['self'].nav(**pageargs)
         
 
-        __M_writer('\n</div>\n\n<div id="leftside" class="col-md-2">\n    <div id="buttons">\n        <p>Which color do you prefer?</p>\n        <button id="blue" type="button" class="color btn btn-primary btn-lg">Blue</button>\n        <button id="green" type="button" class="color btn btn-success btn-lg">Green</button>\n        <p>\n            <br/>Likes = <b id="blue_clicks">0</b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp\n            Likes = <b id="green_clicks">0</b><br/>\n        </p>\n        <p id="winner"></p>\n    </div><!--buttons-->\n</div>\n<!--leftside-->\n\n<div id="center" class="col-md-10">\n    <div id="login_dialog" class="modal fade">\n        <div class="modal-dialog">\n            <div class="modal-content">\n                <div class="modal-header">\n                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span\n                            aria-hidden="true">&times;</span></button>\n                    <h4 class="modal-title">Sign In</h4>\n                </div>\n                <div class="modal-body">\n                    <p>One fine body&hellip;</p>\n                </div>\n            </div>\n            <!-- /.modal-content -->\n        </div>\n        <!-- /.modal-dialog -->\n    </div>\n    <!-- /.modal -->\n    ')
+        __M_writer('<!--nav-->\n</div><!--header-->\n\n<div id="leftside" class="col-md-2">\n    <div id="buttons">\n        <p>Which color do you prefer?</p>\n        <button id="blue" type="button" class="color btn btn-primary btn-lg">Blue</button>\n        <button id="green" type="button" class="color btn btn-success btn-lg">Green</button>\n        <p>\n            <br/>Likes = <b id="blue_clicks">0</b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp\n            Likes = <b id="green_clicks">0</b><br/>\n        </p>\n        <p id="winner"></p>\n    </div><!--buttons-->\n</div>\n<!--leftside-->\n\n<div id="center" class="col-md-10">\n    <!--<div id="login_dialog" class="modal fade">\n        <div class="modal-dialog">\n            <div class="modal-content">\n                <div class="modal-header">\n                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span\n                            aria-hidden="true">&times;</span></button>\n                    <h4 class="modal-title">Sign In</h4>\n                </div>\n                <div class="modal-body">\n                    <p>One fine body&hellip;</p>\n                </div>\n            </div>\n        </div>\n    </div>-->\n    ')
         if 'parent' not in context._data or not hasattr(context._data['parent'], 'content'):
             context['self'].content(**pageargs)
         
 
-        __M_writer('\n</div> <!-- center -->\n\n<div id="footer" class="container-fluid">\n    <footer>\n        <p style="text-align:center;">\n            <span class="glyphicon glyphicon-copyright-mark" aria-hidden="true"></span>\n            Bigfoot\n        </p>\n    </footer>\n</div>\n\n')
+        __M_writer('\n</div> <!-- center -->\n\n\n\n<div id="footer" class="container-fluid">\n    <footer>\n        <p style="text-align:center;">\n            <span class="glyphicon glyphicon-copyright-mark" aria-hidden="true"></span>\n            Bigfoot\n        </p>\n    </footer>\n</div>\n\n')
         __M_writer(str( static_renderer.get_template_js(request, context) ))
         __M_writer('\n\n</body>\n\n</html>')
-        return ''
-    finally:
-        context.caller_stack._pop_frame()
-
-
-def render_nav(context,**pageargs):
-    __M_caller = context.caller_stack._push_frame()
-    try:
-        def nav():
-            return render_nav(context)
-        request = context.get('request', UNDEFINED)
-        __M_writer = context.writer()
-        __M_writer('\n    <div id="outside_nav">\n        <nav class="navbar navbar-inverse">\n            <div id="inside_navbar" class="container-fluid">\n                <ul class="nav navbar-nav">\n                    <li role="presentation" ')
-        __M_writer(str(
-                    'class="active"' if request.dmp_router_page == 'index' else '' ))
-        __M_writer('>\n                    <a href="/homepage/index">Home</a>\n                    </li>\n')
-        if request.user.is_authenticated() and request.user.groups.all()[0].name == 'Administrator':
-            __M_writer('                    <li role="presentation" ')
-            __M_writer(str(
-                    'class="active"' if request.dmp_router_page == 'users' else '' ))
-            __M_writer('>\n                    <a href="/homepage/users">Users</a>\n                    </li>\n')
-        if request.user.is_authenticated() and (request.user.groups.all()[0].name == 'Manager' or request.user.groups.all()[0].name == 'Administrator'):
-            __M_writer('                    <li role="presentation" ')
-            __M_writer(str(
-                    'class="active"' if request.dmp_router_page == 'product' else '' ))
-            __M_writer('>\n                    <a href="/homepage/product">Products</a>\n                    </li>\n                    <li class="dropdown">\n                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Owners\n                            <span class="caret"></span></a>\n                        <ul class="dropdown-menu" role="menu">\n                            <li ')
-            __M_writer(str(
-                            'class="active"' if request.dmp_router_page == 'person' else '' ))
-            __M_writer('>\n                            <a href="/homepage/person/">Individuals</a>\n                    </li>\n                    <li role="presentation" ')
-            __M_writer(str(
-                    'class="active"' if request.dmp_router_page == 'organization' else '' ))
-            __M_writer('>\n                    <a href="/homepage/organization/">Organizations</a>\n                    </li>\n                </ul>\n                </li>\n                <li role="presentation" ')
-            __M_writer(str(
-                'class="active"' if request.dmp_router_page == 'report' else '' ))
-            __M_writer('>\n                <a href="/homepage/report">Overdue Items Report</a>\n                </li>\n')
-        __M_writer('                <li role="presentation" ')
-        __M_writer(str(
-                'class="active"' if request.dmp_router_page == 'rental_return' else '' ))
-        __M_writer('>\n                <a href="/homepage/rental_return/">Rental Return</a>\n                </li>\n                <li role="presentation" ')
-        __M_writer(str(
-                'class="active"' if request.dmp_router_page == 'rental_products' else '' ))
-        __M_writer('>\n                <a href="/homepage/rental_products">Rental Products</a>\n                </li>\n                </ul>\n                <ul class="nav navbar-nav navbar-right">\n')
-        if request.user.is_authenticated():
-            __M_writer('                    <p class="navbar-text">Welcome, ')
-            __M_writer(str( request.user.first_name))
-            __M_writer('!</p>\n                    <button type="button" id="view_rental_cart" class="btn btn-warning navbar-btn">\n                        View Cart <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>\n                    </button>\n                    <a href="/homepage/login.logout_view" class="btn btn-warning navbar-btn">Sign Out</a>\n')
-        else:
-            __M_writer('                    <button id="show_login_dialog_nav" type="button" class="btn btn-warning navbar-btn">Sign In</button>\n')
-        __M_writer('                </ul>\n            </div>\n        </nav>\n    </div>\n')
         return ''
     finally:
         context.caller_stack._pop_frame()
@@ -135,18 +86,6 @@ def render_meta(context,**pageargs):
         context.caller_stack._pop_frame()
 
 
-def render_content(context,**pageargs):
-    __M_caller = context.caller_stack._push_frame()
-    try:
-        def content():
-            return render_content(context)
-        __M_writer = context.writer()
-        __M_writer('\n    Site content goes here in sub-templates.\n')
-        return ''
-    finally:
-        context.caller_stack._pop_frame()
-
-
 def render_title(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
@@ -159,8 +98,69 @@ def render_title(context,**pageargs):
         context.caller_stack._pop_frame()
 
 
+def render_content(context,**pageargs):
+    __M_caller = context.caller_stack._push_frame()
+    try:
+        def content():
+            return render_content(context)
+        __M_writer = context.writer()
+        __M_writer('\n        Site content goes here in sub-templates.\n    ')
+        return ''
+    finally:
+        context.caller_stack._pop_frame()
+
+
+def render_nav(context,**pageargs):
+    __M_caller = context.caller_stack._push_frame()
+    try:
+        request = context.get('request', UNDEFINED)
+        def nav():
+            return render_nav(context)
+        __M_writer = context.writer()
+        __M_writer('\n        <div id="outside_nav">\n            <nav class="navbar navbar-inverse">\n                <div id="inside_navbar" class="container-fluid">\n                    <ul class="nav navbar-nav">\n                        <li role="presentation" ')
+        __M_writer(str(
+                        'class="active"' if request.dmp_router_page == 'index' else '' ))
+        __M_writer('>\n                        <a href="/homepage/index">Home</a>\n                        </li>\n')
+        if request.user.is_authenticated() and request.user.groups.all()[0].name == 'Administrator':
+            __M_writer('                        <li role="presentation" ')
+            __M_writer(str(
+                        'class="active"' if request.dmp_router_page == 'users' else '' ))
+            __M_writer('>\n                        <a href="/homepage/users">Users</a>\n                        </li>\n')
+        if request.user.is_authenticated() and (request.user.groups.all()[0].name == 'Manager' or request.user.groups.all()[0].name == 'Administrator'):
+            __M_writer('                        <li role="presentation" ')
+            __M_writer(str(
+                        'class="active"' if request.dmp_router_page == 'product' else '' ))
+            __M_writer('>\n                        <a href="/homepage/product">Products</a>\n                        </li>\n                        <li class="dropdown">\n                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Owners\n                                <span class="caret"></span></a>\n                            <ul class="dropdown-menu" role="menu">\n                                <li ')
+            __M_writer(str(
+                                'class="active"' if request.dmp_router_page == 'person' else '' ))
+            __M_writer('>\n                                <a href="/homepage/person/">Individuals</a>\n                        </li>\n                        <li role="presentation" ')
+            __M_writer(str(
+                        'class="active"' if request.dmp_router_page == 'organization' else '' ))
+            __M_writer('>\n                        <a href="/homepage/organization/">Organizations</a>\n                        </li>\n                    </ul>\n                    </li>\n                    <li role="presentation" ')
+            __M_writer(str(
+                    'class="active"' if request.dmp_router_page == 'report' else '' ))
+            __M_writer('>\n                    <a href="/homepage/report">Overdue Items Report</a>\n                    </li>\n')
+        __M_writer('                    <li role="presentation" ')
+        __M_writer(str(
+                    'class="active"' if request.dmp_router_page == 'rental_return' else '' ))
+        __M_writer('>\n                    <a href="/homepage/rental_return/">Rental Return</a>\n                    </li>\n                    <li role="presentation" ')
+        __M_writer(str(
+                    'class="active"' if request.dmp_router_page == 'rental_products' else '' ))
+        __M_writer('>\n                    <a href="/homepage/rental_products">Rental Products</a>\n                    </li>\n                    </ul>\n                    <ul class="nav navbar-nav navbar-right">\n')
+        if request.user.is_authenticated():
+            __M_writer('                        <p class="navbar-text">Welcome, ')
+            __M_writer(str( request.user.first_name))
+            __M_writer('!</p>\n                        <button type="button" id="view_rental_cart" class="btn btn-warning navbar-btn">\n                            View Cart <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>\n                        </button>\n                        <a href="/homepage/login.logout_view" class="btn btn-warning navbar-btn">Sign Out</a>\n')
+        else:
+            __M_writer('                        <button id="show_login_dialog_nav" type="button" class="btn btn-warning navbar-btn">Sign In</button>\n')
+        __M_writer('                    </ul>\n                </div>\n            </nav>\n        </div>\n    ')
+        return ''
+    finally:
+        context.caller_stack._pop_frame()
+
+
 """
 __M_BEGIN_METADATA
-{"source_encoding": "ascii", "filename": "/Users/Nate/chf_dmp/homepage/templates/base.htm", "line_map": {"132": 15, "162": 156, "138": 149, "16": 4, "18": 0, "144": 149, "150": 11, "156": 11, "34": 2, "35": 4, "36": 5, "40": 5, "45": 13, "50": 20, "51": 23, "52": 25, "53": 25, "54": 26, "55": 26, "56": 34, "57": 34, "58": 37, "59": 37, "64": 114, "69": 151, "70": 164, "71": 164, "77": 52, "84": 52, "85": 57, "87": 58, "88": 61, "89": 62, "90": 62, "92": 63, "93": 67, "94": 68, "95": 68, "97": 69, "98": 76, "100": 77, "101": 80, "103": 81, "104": 86, "106": 87, "107": 91, "108": 91, "110": 92, "111": 95, "113": 96, "114": 101, "115": 102, "116": 102, "117": 102, "118": 107, "119": 108, "120": 110, "126": 15}, "uri": "base.htm"}
+{"filename": "/Users/Nate/chf_dmp/homepage/templates/base.htm", "source_encoding": "ascii", "uri": "base.htm", "line_map": {"128": 63, "129": 67, "130": 68, "131": 68, "133": 69, "134": 76, "162": 156, "136": 77, "137": 80, "139": 81, "140": 86, "142": 87, "143": 91, "16": 4, "18": 0, "147": 95, "149": 96, "150": 101, "151": 102, "152": 102, "153": 102, "154": 107, "155": 108, "156": 110, "34": 2, "35": 4, "36": 5, "40": 5, "45": 13, "50": 20, "51": 23, "52": 25, "53": 25, "54": 26, "55": 26, "56": 34, "57": 34, "58": 37, "59": 37, "64": 114, "69": 148, "70": 163, "71": 163, "77": 15, "83": 15, "89": 11, "95": 11, "144": 91, "101": 146, "107": 146, "146": 92, "113": 52, "120": 52, "121": 57, "123": 58, "124": 61, "125": 62, "126": 62}}
 __M_END_METADATA
 """
