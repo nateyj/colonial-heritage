@@ -255,21 +255,6 @@ def receipt(request):
     # list for the rental items of the transaction where they were rented out
     email_params['rental_items'] = {}
 
-    # if fee_total_str != '0.00':
-    #     email_params[RETURN_CHARGE_RESP_KEY] = request.session[RETURN_CHARGE_RESP_KEY]
-    #
-    #     try:
-    #         # gets the transaction that contains all of the fees associated with being late or damaged
-    #         fee_trans = hmod.Transaction.objects.get(credit_card_charge_ID=request.session[RETURN_CHARGE_RESP_KEY]['ID'])
-    #     except hmod.Transaction.DoesNotExist:
-    #         return HttpResponseRedirect('/homepage/index/')
-    #
-    #     email_params['fee_trans'] = fee_trans
-    #
-    # else:
-    #     print("fee total is 0.00")
-    #     email_params['fee_trans'] = ''
-
     try:
         user = hmod.SiteUser.objects.get(username=username)
     except hmod.SiteUser.DoesNotExist:

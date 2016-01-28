@@ -77,6 +77,15 @@ def edit(request):
                 site_user.email = email
                 site_user.save()
 
+                # add the new user to the Guest group
+                try:
+                    authorization = Group.objects.get(name='Guest')
+                except Group.DoesNotExist:
+                    return HttpResponseRedirect('/account/index2/')
+
+                site_user.groups.add(authorization)
+                site_user.save()
+
                 # after user creates an account, this will log them in upon creation
                 user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
                 login(request, user)

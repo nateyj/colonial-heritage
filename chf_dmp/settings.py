@@ -58,11 +58,12 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_mako_plus.controller',
     'homepage',
-    'polymorphic',
     'account',
     'catalog',
-    'password_reset',
-    'bootstrap3_datetime',
+    'polymorphic',          # pip install django-polymorphic
+    'password_reset',       # pip install django-password-reset
+    # 'bootstrap3_datetime',
+    'bootstrap3',           # pip install django-bootstrap3
 )
 
 MIDDLEWARE_CLASSES = (
@@ -93,9 +94,9 @@ DATABASES = {
         'NAME': 'db_chf',  # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'postgres',
-        'PASSWORD': 'aL112131Ma',
+        'PASSWORD': 'Nat3J0hn50n',
         'HOST': 'localhost',  # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '5432',  # Set to empty string for default.
+        'PORT': '5433',  # Set to empty string for default.
     }
 }
 

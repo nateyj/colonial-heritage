@@ -4,7 +4,7 @@ import random
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.utils import timezone
 from datetime import datetime
-from polymorphic import PolymorphicModel
+from polymorphic.models import PolymorphicModel
 from django.contrib.auth.models import Group
 from decimal import Decimal
 
@@ -34,7 +34,6 @@ class SiteUser(AbstractUser):
     # address and phone are nullable until the user wants to buy or rent something
     # photo_id = models.ForeignKey(Photograph, related_name='+')
 
-
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
@@ -60,7 +59,7 @@ class SiteUser(AbstractUser):
 
         for transaction in user_transactions:
             # unreturned_rental_items is a list of unreturned rental items for this particular transaction
-            tran_checked_out_rental_items = RentalItem.objects.filter(date_in=None, transaction=transaction)
+            tran_checked_out_rental_items = RentalItem.objects.filter(date_in=None, transaction=Transaction)
 
             # check to see if the unreturned_rental_items list is empty. What if the query above was querying an online sale
             #   transaction rather than a rental transaction?
@@ -204,7 +203,7 @@ class Area(models.Model):
     coordinator = models.ForeignKey(Participant, related_name='coordinates')
     supervisor = models.ForeignKey(Employee, related_name='supervises')
     public_event = models.ForeignKey(PublicEvent, related_name='areas')
-    participants = models.ManyToManyField(Participant, through='ParticipantRole', null=True)
+    participants = models.ManyToManyField(Participant, through='ParticipantRole')
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -511,8 +510,3 @@ class SaleItem(TransactionLineItem):
 
     def calc_amount(self):
         self.amount = self.product.product_specification.price * self.quantity
-
-
-
-
-

@@ -16,6 +16,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="django" />
     <orderEntry type="module" module-name="chef-master" />
+    <orderEntry type="module" module-name="groupproject3" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
