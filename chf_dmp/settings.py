@@ -108,7 +108,7 @@ else:
             'USER': 'postgres',
             'PASSWORD': 'Nat3J0hn50n',
             'HOST': 'localhost',  # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-            'PORT': '5433',  # Set to empty string for default.
+            'PORT': '5432',  # Set to empty string for default.
         }
     }
 
