@@ -5,7 +5,7 @@ from django import forms
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django_mako_plus.controller import view_function
 from django_mako_plus.controller.router import get_renderer
-from ldap3 import Server, Connection, AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO
+# from ldap3 import Server, Connection, AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO
 import homepage.models as hmod
 
 templater = get_renderer('homepage')
@@ -33,40 +33,41 @@ class LoginForm(forms.Form):
             if len(password) < 4:
                 raise forms.ValidationError("Your password must be at least 4 characters.")
 
-            s = Server('www.westonrhodes.com', port=8889, get_info=GET_ALL_INFO)
+            # for Active Directory
+            # s = Server('www.westonrhodes.com', port=8889, get_info=GET_ALL_INFO)
 
-            try:
-                c = Connection(s, auto_bind=True, client_strategy=STRATEGY_SYNC,
-                               user='%s@westonrhodes.local' % username, password=password, authentication=AUTH_SIMPLE)
+            # try:
+            #     c = Connection(s, auto_bind=True, client_strategy=STRATEGY_SYNC,
+            #                    user='%s@westonrhodes.local' % username, password=password, authentication=AUTH_SIMPLE)
 
-                if c is not None:
-                # now that we know it is a valid user, get the user account from Django
-                # u = hmod.SiteUser.objects.get_or_create(username=username)
-                # # the info is in the c object c.something
-                # u.username = c.user
-                # u.first_name = c.
-                # u.last_name = c.
-                # u.email = c.
-                # u.set_password(c.password)
-                # u.save()
-                    print("there is a C!")
-                    user = authenticate(username=username, password=password)
+            #     if c is not None:
+            #     # now that we know it is a valid user, get the user account from Django
+            #     # u = hmod.SiteUser.objects.get_or_create(username=username)
+            #     # # the info is in the c object c.something
+            #     # u.username = c.user
+            #     # u.first_name = c.
+            #     # u.last_name = c.
+            #     # u.email = c.
+            #     # u.set_password(c.password)
+            #     # u.save()
+            #         print("there is a C!")
+            #         user = authenticate(username=username, password=password)
 
-                    if user == None:
-                        raise forms.ValidationError("The username or password you entered was incorrect.")
-            except:
-                print("The user is not in Active directory")
-                try:
-                    user = authenticate(username=username, password=password)
-                    print("Authentication has happened, will the user object be None?")
-                    if user == None:
-                        raise forms.ValidationError("The username or password you entered was incorrect.")
-                    else:
-                        print("User object is not none and signing in should be happening now.")
-                except:
-                    raise forms.ValidationError("The username or password you entered was incorrect.")
+            #         if user == None:
+            #             raise forms.ValidationError("The username or password you entered was incorrect.")
+            # except:
+            #     print("The user is not in Active directory")
+            #     try:
+            #         user = authenticate(username=username, password=password)
+            #         print("Authentication has happened, will the user object be None?")
+            #         if user == None:
+            #             raise forms.ValidationError("The username or password you entered was incorrect.")
+            #         else:
+            #             print("User object is not none and signing in should be happening now.")
+            #     except:
+            #         raise forms.ValidationError("The username or password you entered was incorrect.")
 
-            print("Now out of the try-except")
+            # print("Now out of the try-except")
 
 
         return self.cleaned_data

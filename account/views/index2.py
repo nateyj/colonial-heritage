@@ -5,7 +5,7 @@ from django import forms
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django_mako_plus.controller import view_function
 from django_mako_plus.controller.router import get_renderer
-from ldap3 import Server, Connection, AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO
+# from ldap3 import Server, Connection, AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO
 import homepage.models as hmod
 
 
